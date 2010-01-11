@@ -1,15 +1,15 @@
-application: prion-chat
+application: gr-chat
 version: 1
 runtime: python
 api_version: 1
 
 handlers:
 
-- url: /account/[^/]+
+- url: /account/[^/]*
   script: account.py
   login: required
 
-- url: /room/[^/]+
+- url: /room/[^/]*
   script: room.py
   login: required
 
