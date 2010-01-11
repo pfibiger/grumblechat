@@ -1,0 +1,28 @@
+<html>
+  <body>
+
+    <h2>Room: {{ room.name }}</h2>
+
+    <h3>Topic: {{ room.topic }}</h3>
+
+    <h3>Chat</h3>
+
+    <table>
+      {% for message in messages %}
+      <tr>
+        <td>{{ message.timestamp|time:"H:i:s" }}</td>
+        <td>&lt;{{ message.sender.nickname }}&gt;</td>
+        <td>{{ message.content }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <form action="/room/{{ room.key }}/msg" method="post">
+      <p>
+        <input type="text" name="content"/>
+        <input type="submit" value="Send"/>
+      </p>
+    </form>
+
+  </body>
+</html>

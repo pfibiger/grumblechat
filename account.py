@@ -3,7 +3,6 @@ from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
-import os
 
 from models import *
 
@@ -14,28 +13,38 @@ class AccountCollectionHandler(webapp.RequestHandler):
         user = users.get_current_user()
         account = Account.all().filter('user =', user).get()
         if account:
+            # account exists
             self.redirect('/account/' + str(account.key()))
         else:
+            # no account for this user
             self.response.out.write(template.render('templates/account_create.html', None))
 
     def post(self):
         user = users.get_current_user()
         nickname = self.request.get('nickname')
-        if (len(nickname)):
-            account = Account(user=user, nickname=nickname)
-            account.put()
-            self.redirect('/account/' + str(account.key()))
-        else:
+        if not len(nickname):
+            # no nickname entered
             self.response.out.write(template.render('templates/account_create.html',
                                                     {'error_msg': 'Please enter a nickname.'}
                                                     ))
+        else:
+            account = Account(user=user, nickname=nickname)
+            account.put()
+            self.redirect('/account/' + str(account.key()))
             
 
 class AccountHandler(webapp.RequestHandler):
 
     def get(self, account_key):
         account = Account.all().filter('__key__ =', Key(account_key)).get()
-        self.response.out.write('nickname=%s ; user=%s' % (account.nickname, str(account.user)))
+        if not account:
+            # account doesn't exist
+            self.error(404)
+            self.response.out.write("no such account")
+        else:
+            self.response.out.write(template.render('templates/account.html', 
+                                                    {'account': account}
+                                                    ))
 
 
 application = webapp.WSGIApplication([('/account/', AccountCollectionHandler),

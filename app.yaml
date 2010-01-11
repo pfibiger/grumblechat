@@ -5,8 +5,16 @@ api_version: 1
 
 handlers:
 
-- url: /account/.*
+- url: /account/[^/]+
   script: account.py
+  login: required
+
+- url: /room/[^/]+
+  script: room.py
+  login: required
+
+- url: /room/[^/]+/msg
+  script: message.py
   login: required
 
 - url: .*

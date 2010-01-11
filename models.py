@@ -8,7 +8,7 @@ class Account(db.Model):
 
 class Room(db.Model):
     name = db.StringProperty(required=True)
-    topic = db.StringProperty()
+    topic = db.StringProperty(default='')
 
 
 class Message(db.Model):

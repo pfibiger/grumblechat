@@ -1,0 +1,32 @@
+<html>
+  <body>
+
+    <h2>Rooms</h2>
+
+    <h3>Existing rooms</h3>
+
+    <table>
+      <tr>
+        <th style="padding-right: 1em;">Name</th>
+        <th>Topic</th>
+      </tr>
+      {% for room in rooms %}
+      <tr>
+        <td><a href="/room/{{ room.key }}">{{ room.name }}</a></td>
+        <td>{{ room.topic }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <h3>Create a new room</h3>
+
+    <form action="" method="post">
+      {% if error_msg %}
+      <p style="color: #ff0000;">{{ error_msg }}</p>
+      {% endif %}
+      <p>Name: <input type="text" name="name" value="{{ name }}"/></p>
+      <p><input type="submit" value="Create Room"/></p>
+    </form>
+
+  </body>
+</html>
