@@ -1,0 +1,15 @@
+<html>
+  <body>
+
+    <p>To create an account, please choose a nickname:</p>
+
+    <form action="" method="post">
+      {% if error_msg %}
+        <p style="color: #ff0000;">{{ error_msg }}</p>
+      {% endif %}
+      <p>Nickname: <input type="text" name="nickname"/></p>
+      <p><input type="submit" value="Create Account"/></p>
+    </form>
+
+  </body>
+</html>

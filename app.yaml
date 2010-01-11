@@ -4,5 +4,10 @@ runtime: python
 api_version: 1
 
 handlers:
+
+- url: /account/.*
+  script: account.py
+  login: required
+
 - url: .*
   script: main.py
