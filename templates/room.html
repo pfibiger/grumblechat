@@ -1,28 +1,40 @@
-<html>
-  <body>
+{% extends "base.html" %}
+{% block heading %}Room: {{ room.name }}{% endblock %}
 
-    <h2>Room: {{ room.name }}</h2>
+{% block content %}
 
-    <h3>Topic: {{ room.topic }}</h3>
+<h3>
+  Topic:
+  {% if room.topic|length %}
+  {{ room.topic }}
+  {% else %}
+  <em class="quiet">not set</em>
+  {% endif %}
+</h3>
 
-    <h3>Chat</h3>
+<h3>Chat Log</h3>
 
-    <table>
-      {% for message in messages %}
-      <tr>
-        <td>{{ message.timestamp|time:"H:i:s" }}</td>
-        <td>&lt;{{ message.sender.nickname }}&gt;</td>
-        <td>{{ message.content }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+<div class="chatlog span-20">
+  {% for message in messages %}
+  <div class="message">
+    <div class="msg-timestamp span-2">{{ message.timestamp|time:"H:i:s" }}</div>
+    <div class="msg-sender span-2">&lt;{{ message.sender.nickname }}&gt;</div>
+    <div class="msg-content span-16 last">{{ message.content }}</div>
+  </div>
+  {% endfor %}
 
-    <form action="/room/{{ room.key }}/msg" method="post">
-      <p>
-        <input type="text" name="content"/>
+  <form action="/room/{{ room.key }}/msg" method="post">
+    <div class="dataentry span-20 last">
+      <div class="span-16 push-4 last">
+        <input type="text" name="content" style="width: 560px;"/>
         <input type="submit" value="Send"/>
-      </p>
-    </form>
+      </div>
+    </div>
+  </form>
+</div>
 
-  </body>
-</html>
+<div class="sidebar span-4 last">
+  TODO: participant list etc. here
+</div>
+
+{% endblock %}

@@ -17,5 +17,8 @@ handlers:
   script: message.py
   login: required
 
+- url: /css
+  static_dir: css 
+
 - url: .*
   script: main.py
