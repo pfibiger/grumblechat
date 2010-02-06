@@ -17,5 +17,9 @@ handlers:
   script: message.py
   login: required
 
+- url: /room/[^/]+/topic
+  script: message.py
+  login: required
+
 - url: .*
   script: main.py

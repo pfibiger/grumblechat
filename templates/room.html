@@ -3,7 +3,12 @@
 
     <h2>Room: {{ room.name }}</h2>
 
-    <h3>Topic: {{ room.topic }}</h3>
+    <h3>Topic: 
+	    <form action="/room/{{ room.key }}/topic" method="post">
+	        <input type="text" name="topic" value="{{ room.topic }}"/>
+	        <input type="submit" value="Send"/>
+	    </form>
+	</h3>
 
     <h3>Chat</h3>
 
