@@ -4,6 +4,7 @@ from google.appengine.ext import db
 class Account(db.Model):
     user = db.UserProperty(required=True)
     nickname = db.StringProperty(required=True)
+    gravatar_tag = db.StringProperty(default='')
 
 
 class Room(db.Model):
