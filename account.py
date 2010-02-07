@@ -10,8 +10,9 @@ from models import *
 class AccountCollectionHandler(webapp.RequestHandler):
 
     def get(self):
-        user = users.get_current_user()
-        account = Account.all().filter('user =', user).get()
+        #user = users.get_current_user()
+        #account = Account.all().filter('user =', user).get()
+        account = get_account()
         if account:
             # account exists
             if not account.gravatar_tag:
@@ -70,6 +71,11 @@ def gravatar(email):
         'r':rating,
         'd':default_image})
     return """<img src="%s" alt="gravatar" />""" % gravatar_url
+
+def get_account():
+    user = users.get_current_user()
+    account = Account.all().filter('user =', user).get()
+    return account
 
 
 if __name__ == '__main__':
