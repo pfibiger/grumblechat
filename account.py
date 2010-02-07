@@ -16,7 +16,7 @@ class AccountCollectionHandler(webapp.RequestHandler):
         if account:
             # account exists
             if not account.gravatar_tag:
-                account.gravatar_tag = gravatar(user.nickname())
+                account.gravatar_tag = gravatar(account.user.nickname())
                 #account.gravatar_tag = "test123"
                 account.put()
             self.redirect('/account/' + str(account.key()))
@@ -62,7 +62,7 @@ def main():
     run_wsgi_app(application)
 
 def gravatar(email):
-    size=20
+    size=10
     rating='g'
     default_image=''
     gravatar_url = "http://www.gravatar.com/avatar/"

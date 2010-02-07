@@ -3,6 +3,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
+from account import get_account
 
 from models import *
 
@@ -34,6 +35,14 @@ class RoomHandler(webapp.RequestHandler):
     def get(self, room_key):
         room = Room.all().filter('__key__ =', Key(room_key)).get()
         messages = Message.all().filter('room =', room).order('timestamp')
+        account = get_account()
+        roomlist_query = RoomList.all()
+        roomlist_query.filter('room = ', room)
+        roomlist = roomlist_query.filter('account = ', account).get()
+        if not roomlist:
+            roomlist = RoomList(account=account, room=room)
+            roomlist.put()
+        roomlist = RoomList.all().filter('room = ', room)
         if not room:
             # room doesn't exist
             self.error(404)
@@ -41,12 +50,24 @@ class RoomHandler(webapp.RequestHandler):
         else:
             self.response.out.write(template.render('templates/room.html', 
                                                     {'room': room,
+                                                     'roomlist': roomlist,
                                                      'messages': messages}
                                                     ))
-
+                                                    
+class LeaveHandler(webapp.RequestHandler):
+    
+    def post(self, room_key):
+        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        account = get_account()
+        roomlist_query = RoomList.all()
+        roomlist_query.filter('room = ', room)
+        roomlist = roomlist_query.filter('account = ', account).get()
+        roomlist.delete()
+        self.redirect('/room/')
 
 application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
-                                      (r'/room/([^/]+)', RoomHandler)],
+                                      (r'/room/([^/]+)', RoomHandler),
+                                      (r'/room/([^/]+)/leave', LeaveHandler)],
                                      debug=True)
 
 def main():

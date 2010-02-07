@@ -29,5 +29,22 @@
       </p>
     </form>
 
+    <h3>Users</h3>
+    <table>
+      {% for roomlisting in roomlist %}
+      <tr>
+        <td>{{ roomlisting.account.gravatar_tag }}</td>
+        <td>{{ roomlisting.account.nickname }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <form action="/room/{{ room.key }}/leave" method="post">
+      <p>
+        <input type="submit" value="Leave Room"/>
+      </p>
+    </form>
+
+
   </body>
 </html>

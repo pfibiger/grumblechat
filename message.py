@@ -27,7 +27,7 @@ class MessageCollectionHandler(webapp.RequestHandler):
         self.redirect('/room/' + room_key)
 
 
-class TopicCollectionHandler(webapp.RequestHandler):
+class TopicHandler(webapp.RequestHandler):
 
     def post(self, room_key):
         user = users.get_current_user()
@@ -40,10 +40,11 @@ class TopicCollectionHandler(webapp.RequestHandler):
         elif len(topic):
 			room.topic = topic
 			room.put()
-        self.redirect('/room/' + room_key)            
+        self.redirect('/room/' + room_key)       
+
 
 application = webapp.WSGIApplication([(r'/room/([^/]+)/msg', MessageCollectionHandler),
-									   (r'/room/([^/]+)/topic',TopicCollectionHandler)],
+									  (r'/room/([^/]+)/topic',TopicHandler)],
                                      debug=True)
 
 def main():
