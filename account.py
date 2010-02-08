@@ -64,7 +64,7 @@ def main():
 def gravatar(email):
     size=30
     rating='g'
-    default_image=''
+    default_image='identicon'
     gravatar_url = "http://www.gravatar.com/avatar.php?"
     #gravatar_url += hashlib.md5(email).hexdigest()
     gravatar_url += urllib.urlencode({
