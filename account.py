@@ -62,12 +62,14 @@ def main():
     run_wsgi_app(application)
 
 def gravatar(email):
-    size=10
+    size=30
     rating='g'
     default_image=''
-    gravatar_url = "http://www.gravatar.com/avatar/"
-    gravatar_url += hashlib.md5(email).hexdigest()
-    gravatar_url += urllib.urlencode({'s':str(size),
+    gravatar_url = "http://www.gravatar.com/avatar.php?"
+    #gravatar_url += hashlib.md5(email).hexdigest()
+    gravatar_url += urllib.urlencode({
+        'gravatar_id':hashlib.md5(email).hexdigest(),
+        's':str(size),
         'r':rating,
         'd':default_image})
     return """<img src="%s" alt="gravatar" />""" % gravatar_url

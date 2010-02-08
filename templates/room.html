@@ -36,8 +36,8 @@
     <table>
       {% for roomlisting in roomlist %}
       <tr>
-        <td>{{ roomlisting.account.gravatar_tag }}</td>
-        <td>{{ roomlisting.account.nickname }}</td>
+        <td>{{ roomlisting.account.gravatar_tag }}<br>
+        {{ roomlisting.account.nickname }}</td>
       </tr>
       {% endfor %}
     </table></div>
