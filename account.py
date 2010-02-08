@@ -16,7 +16,7 @@ class AccountCollectionHandler(webapp.RequestHandler):
         if account:
             # account exists
             if not account.gravatar_tag:
-                account.gravatar_tag = gravatar(account.user.nickname())
+                account.gravatar_tag = gravatar(account.user.email())
                 #account.gravatar_tag = "test123"
                 account.put()
             self.redirect('/account/' + str(account.key()))
@@ -27,14 +27,13 @@ class AccountCollectionHandler(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
         nickname = self.request.get('nickname')
-        email = self.request.get('nickname')
         if not len(nickname):
             # no nickname entered
             self.response.out.write(template.render('templates/account_create.html',
                                                     {'error_msg': 'Please enter a nickname.'}
                                                     ))
         else:
-            account = Account(user=user, nickname=nickname, email=email)
+            account = Account(user=user, nickname=nickname)
             account.put()
             self.redirect('/account/' + str(account.key()))
             
