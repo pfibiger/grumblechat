@@ -1,9 +1,11 @@
 <html>
   <body>
-
-    <h2>Account: {{ account.user }}</h2>
+    <h2>Gravatar: {{ account.gravatar_tag }}</h2>
+    <h2>Account: {{ account.user.nickname }}</h2>
 
     <p>Nickname: {{ account.nickname }}</p>
+    
+    <p><a href="/">Home</a> | <a href="/room/">Rooms List</a></p>
 
   </body>
 </html>

@@ -3,14 +3,12 @@
 
 {% block content %}
 
-<h3>
-  Topic:
-  {% if room.topic|length %}
-  {{ room.topic }}
-  {% else %}
-  <em class="quiet">not set</em>
-  {% endif %}
-</h3>
+    <h3>Topic: 
+	    <form action="/room/{{ room.key }}/topic" method="post">
+	        <input type="text" name="topic" value="{{ room.topic }}"/>
+	        <input type="submit" value="Send"/>
+	    </form>
+	</h3>
 
 <h3>Chat Log</h3>
 
@@ -34,7 +32,20 @@
 </div>
 
 <div class="sidebar span-4 last">
-  TODO: participant list etc. here
-</div>
+    <h3>Users</h3>
+    <table>
+      {% for roomlisting in roomlist %}
+      <tr>
+        <td>{{ roomlisting.account.gravatar_tag }}</td>
+        <td>{{ roomlisting.account.nickname }}</td>
+      </tr>
+      {% endfor %}
+    </table></div>
+
+    <form action="/room/{{ room.key }}/leave" method="post">
+      <p>
+        <input type="submit" value="Leave Room"/>
+      </p>
+    </form>
 
 {% endblock %}
