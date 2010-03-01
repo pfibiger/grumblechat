@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+
+{% block head_extra %}
+  <meta http-equiv="Refresh" content="15">
+{% endblock %}
+
 {% block heading %}Room: {{ room.name }}{% endblock %}
 
 {% block content %}
@@ -36,7 +41,7 @@
     <table>
       {% for roomlisting in roomlist %}
       <tr>
-        <td>{{ roomlisting.account.gravatar_tag }}<br>
+        <td>{{ roomlisting.account.gravatar_tag }}
         {{ roomlisting.account.nickname }}</td>
       </tr>
       {% endfor %}
