@@ -5,9 +5,10 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from datetime import datetime
+from django.utils import simplejson
 
 from models import *
-
+from wsgiref.util import request_uri
 
 class MessageCollectionHandler(webapp.RequestHandler):
 
@@ -26,6 +27,23 @@ class MessageCollectionHandler(webapp.RequestHandler):
             message.put()
         self.redirect('/room/' + room_key)
 
+class APIMessageHandler(webapp.RequestHandler):
+
+    def get(self, room_key, message_key):
+        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        message = Message.all().filter('__key__ =', Key(message_key)).get()
+        if not room:
+            # room doesn't exist
+            self.error(404)
+            self.response.out.write("no such room")
+        else:
+            url = "http://" + self.request.headers.get('host', 'no host') + "/"
+            sender_url = url + "account/" + str(message.sender.key())
+            room_url = url + "room/" + str(message.room.key())
+            payload = {'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
+                       'sender' : sender_url, 'room' : room_url}
+            json = simplejson.dumps(payload)
+            self.response.out.write(json)
 
 class TopicHandler(webapp.RequestHandler):
 
@@ -44,6 +62,7 @@ class TopicHandler(webapp.RequestHandler):
 
 
 application = webapp.WSGIApplication([(r'/room/([^/]+)/msg', MessageCollectionHandler),
+                                      (r'/api/room/([^/]+)/msg/([^/]+)', APIMessageHandler),
 									  (r'/room/([^/]+)/topic',TopicHandler)],
                                      debug=True)
 
