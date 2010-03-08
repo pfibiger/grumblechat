@@ -29,5 +29,9 @@ handlers:
   static_dir: css 
   expiration: 1d
 
+- url: /js
+  static_dir: js
+  expiration: 1d
+
 - url: .*
   script: main.py

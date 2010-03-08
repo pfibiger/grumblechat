@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 
-{% block head_extra %}
-  <meta http-equiv="Refresh" content="15">
-{% endblock %}
 
 {% block heading %}Room: {{ room.name }}{% endblock %}
+
 
 {% block content %}
 
@@ -17,7 +15,7 @@
 
 <h3>Chat Log</h3>
 
-<div class="chatlog span-20">
+<div id="chatlog" class="span-20">
   {% for message in messages %}
   <div class="message">
     <div class="msg-timestamp span-2">{{ message.timestamp|time:"H:i:s" }}</div>
@@ -26,8 +24,8 @@
   </div>
   {% endfor %}
 
-  <form action="/room/{{ room.key }}/msg" method="post">
-    <div class="dataentry span-20 last">
+  <form id="text-entry" action="/room/{{ room.key }}/msg" method="post">
+    <div class="span-20 last">
       <div class="span-16 push-4 last">
         <input type="text" name="content" style="width: 560px;"/>
         <input type="submit" value="Send"/>
@@ -36,7 +34,7 @@
   </form>
 </div>
 
-<div class="sidebar span-4 last">
+<div id="sidebar" class="span-4 last">
     <h3>Users</h3>
     <table>
       {% for roomlisting in roomlist %}
@@ -53,4 +51,33 @@
       </p>
     </form>
 
+{% endblock %}
+
+
+{% block script %}
+$(function() {
+    var message_mock = {
+      'timestamp': '2010-03-08 05:50:25.969',
+      'content': 'this is a random number: ',
+      'sender': 'http://localhost:8080/account/agdnci1jaGF0cg0LEgdBY2NvdW50GAEM',
+      'room': 'http://localhost:8080/room/agdnci1jaGF0cgoLEgRSb29tGAIM'
+    };
+
+    $('#text-entry').submit(function(event) {
+        var msg_data = {};
+        $.extend(msg_data, message_mock);
+        msg_data.content += Math.round(Math.random() * 100);
+        var timestamp = chat.parseDate(msg_data.timestamp);
+
+        var $chatlog = $('#chatlog');
+        var $msg_last = $chatlog.find('.message').last()
+        var $msg = $msg_last.clone();
+        $msg.find('.msg-timestamp').html(chat.formatTime(timestamp));
+        $msg.find('.msg-sender').html('&lt;unknown&gt;');
+        $msg.find('.msg-content').html(msg_data.content);
+        $msg_last.after($msg);
+        
+        return false;
+    });
+});
 {% endblock %}
