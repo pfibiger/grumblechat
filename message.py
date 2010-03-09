@@ -8,7 +8,6 @@ from datetime import datetime
 from django.utils import simplejson
 
 from models import *
-from wsgiref.util import request_uri
 
 class MessageCollectionHandler(webapp.RequestHandler):
 
