@@ -7,11 +7,11 @@ chat = function() {
   return {
 
     parseDate: function parseDate(str) {
-      /* from http://anentropic.wordpress.com/2009/06/25/javascript-iso8601-parser-and-pretty-dates/
-         we assume str is a UTC date with space instead of 'T', and without the trailing 'Z'
-         (as produced by django's date formatting) */
+      /* From http://anentropic.wordpress.com/2009/06/25/javascript-iso8601-parser-and-pretty-dates/ .
+         Parses an ISO8601-formated date in UTC, i.e.
+         yyyy-mm-ddThh:mm:ss.ssssss . */
 
-      var parts = str.split(' '),
+      var parts = str.split('T'),
         dateParts = parts[0].split('-'),
         timeParts = parts[1].split(':'),
         timeSecParts = timeParts[2].split('.'),
