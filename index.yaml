@@ -14,3 +14,9 @@ indexes:
   properties:
   - name: room
   - name: timestamp
+
+- kind: Message
+  properties:
+  - name: room
+  - name: timestamp
+    direction: desc

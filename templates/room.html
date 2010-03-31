@@ -56,13 +56,17 @@ $(function() {
     var update_interval_min = 1000;
     var update_interval_max = 1000 * 60;
     var update_interval = update_interval_min;
+    var message_display_max = 40;
 
     var $chatlog = $('#chatlog');
     var $msg_template = $chatlog.find('.message').last();
+    var $text_entry_content = $('#text-entry-content');
 
     $('#text-entry').submit(function() {
-      var msg = $('#text-entry-content').val();
+      var msg = $text_entry_content.val();
       sendMessage(msg);
+      $text_entry_content.val('');
+      update_interval = update_interval_min; // FIXME need to cancel pending update and retrigger it with this new interval
       return false;
     });
 
@@ -75,14 +79,6 @@ $(function() {
             url: post_url,
             type: "POST",
             data: { message: msg },
-            success: function(data) {
-                var $msg_new = $msg_template.clone();
-                $msg_new.css('display', '');
-                $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(response.timestamp)));
-                $msg_new.find('.msg-sender').html(response.sender_name);
-                $msg_new.find('.msg-content').html(response.message);
-                $msg_template.before($msg_new);
-            },
             error: function() {
                 alert("unknown error, try again");
             }
@@ -99,6 +95,10 @@ $(function() {
                     $msg_new.find('.msg-content').html(message.content);
                     $msg_template.before($msg_new);
                 });
+                $messages = $chatlog.children('.message:visible');
+                if ($messages.length > message_display_max) {
+                    $messages.slice(0, $messages.length - message_display_max).remove();
+                }
                 scrollToBottom();
                 url_message_next = data.next
                 update_interval = update_interval_min;

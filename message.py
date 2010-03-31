@@ -30,19 +30,22 @@ class APIMessageHandler(webapp.RequestHandler):
 
     def get(self, room_key, message_key):
         room = Room.all().filter('__key__ =', Key(room_key)).get()
-        message = Message.all().filter('__key__ =', Key(message_key)).get()
         if not room:
-            # room doesn't exist
             self.error(404)
             self.response.out.write("no such room")
-        else:
-            url = "/api/"
-            sender_url = url + "account/" + str(message.sender.key())
-            room_url = url + "room/" + str(message.room.key())
-            payload = {'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
-                       'sender' : sender_url, 'room' : room_url}
-            json = simplejson.dumps(payload)
-            self.response.out.write(json)
+            return
+        message = Message.all().filter('__key__ =', Key(message_key), 'room =', room).get()
+        if not message:
+            self.error(404)
+            self.response.out.write("no such message")
+            return
+        url = "/api/"
+        sender_url = url + "account/" + str(message.sender.key())
+        room_url = url + "room/" + str(message.room.key())
+        payload = {'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
+                   'sender' : sender_url, 'room' : room_url}
+        json = simplejson.dumps(payload)
+        self.response.out.write(json)
 
 class APIMessageCollectionHandler(webapp.RequestHandler):
 
@@ -77,7 +80,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             date_start = self.request.get('start')
             date_end = self.request.get('end')
             query_terms = self.request.get('q')
-            messages = Message.all().order('timestamp')
+            messages = Message.all().filter('room =', room).order('timestamp')
             next_url = None
             if since_message_key != '':
                 # restrict by newer than message (specified by key)

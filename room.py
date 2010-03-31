@@ -39,8 +39,10 @@ class RoomHandler(webapp.RequestHandler):
             self.error(404)
             self.response.out.write("no such room")
             return
+        # return (up to) last 40 messages
+        # FIXME should define '40' as a constant
         # need to enumerate query results to access last message below
-        messages = [m for m in Message.all().filter('room =', room).order('timestamp')]
+        messages = [m for m in reversed(Message.all().filter('room =', room).order('-timestamp').fetch(40))]
         account = get_account()
         roomlist_query = RoomList.all()
         roomlist_query.filter('room = ', room)
