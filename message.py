@@ -78,6 +78,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             date_end = self.request.get('end')
             query_terms = self.request.get('q')
             messages = Message.all().order('timestamp')
+            next_url = None
             if since_message_key != '':
                 # restrict by newer than message (specified by key)
                 # FIXME timestamps might collide, so we need to introduce
