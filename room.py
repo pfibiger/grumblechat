@@ -34,7 +34,13 @@ class RoomHandler(webapp.RequestHandler):
 
     def get(self, room_key):
         room = Room.all().filter('__key__ =', Key(room_key)).get()
-        messages = Message.all().filter('room =', room).order('timestamp')
+        if not room:
+            # room doesn't exist
+            self.error(404)
+            self.response.out.write("no such room")
+            return
+        # need to enumerate query results to access last message below
+        messages = [m for m in Message.all().filter('room =', room).order('timestamp')]
         account = get_account()
         roomlist_query = RoomList.all()
         roomlist_query.filter('room = ', room)
@@ -43,16 +49,15 @@ class RoomHandler(webapp.RequestHandler):
             roomlist = RoomList(account=account, room=room)
             roomlist.put()
         roomlist = RoomList.all().filter('room = ', room)
-        if not room:
-            # room doesn't exist
-            self.error(404)
-            self.response.out.write("no such room")
-        else:
-            self.response.out.write(template.render('templates/room.html', 
-                                                    {'room': room,
-                                                     'roomlist': roomlist,
-                                                     'messages': messages}
-                                                    ))
+        context = {
+            'room': room,
+            'roomlist': roomlist,
+            'messages': messages,
+            }
+        if messages:
+            context['message_last_key'] = messages[-1].key()
+        self.response.out.write(template.render('templates/room.html', context))
+
                                                     
 class LeaveHandler(webapp.RequestHandler):
     

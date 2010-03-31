@@ -17,17 +17,14 @@
 
 <div id="chatlog" class="span-20">
   {% for message in messages %}
-  <div class="message">
-    <div class="msg-timestamp span-2">{{ message.timestamp|time:"H:i:s" }}</div>
-    <div class="msg-sender span-2">&lt;{{ message.sender.nickname }}&gt;</div>
-    <div class="msg-content span-16 last">{{ message.content }}</div>
-  </div>
+    {% include "room_message.html" %}
   {% endfor %}
+  {% include "room_message.html" %}
 
   <form id="text-entry" action="/room/{{ room.key }}/msg" method="post">
     <div class="span-20 last">
       <div class="span-16 push-4 last">
-        <input type="text" name="content" style="width: 560px;"/>
+        <input id="text-entry-content" type="text" name="content" style="width: 560px;"/>
         <input type="submit" value="Send"/>
       </div>
     </div>
@@ -56,20 +53,42 @@
 
 {% block script %}
 $(function() {
-    var message_url = '/api/room/{{ room.key }}/msg?since=FIXME need key for last message';
+    var url_message_next = '/api/room/{{ room.key }}/msg/?since={{ message_last_key }}';
+    var update_interval_min = 1000;
+    var update_interval_max = 1000 * 60;
+    var update_interval = update_interval_min;
 
-/*    $('#text-entry').submit(function(event) {
-        var msg_data = FIXME get message_url;
+    var $chatlog = $('#chatlog');
+    var $msg_template = $chatlog.find('.message').last();
 
-        var $chatlog = $('#chatlog');
-        var $msg_last = $chatlog.find('.message').last(); # FIXME no good if chatlog is empty!
-        var $msg = $msg_last.clone();
-        $msg.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(msg_data.timestamp)));
-        $msg.find('.msg-sender').html('&lt;unknown&gt;');
-        $msg.find('.msg-content').html(msg_data.content);
-        $msg_last.after($msg);
-        
-        return false;
-    });*/
+    function scrollToBottom() {
+        $('html').scrollTop($('html').attr('scrollHeight'));
+    }
+
+
+    function updateChat() {
+        $.getJSON(url_message_next, function(data) {
+            if (data.messages) {
+                $.each(data.messages, function(index, message) {
+                    var $msg_new = $msg_template.clone();
+                    $msg_new.css('display', '');
+                    $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
+                    $msg_new.find('.msg-sender').html('&lt;unknown&gt;'); // FIXME need to maintain user info for nicknames
+                    $msg_new.find('.msg-content').html(message.content);
+                    $msg_template.before($msg_new);
+                });
+                scrollToBottom();
+                url_message_next = data.next
+                update_interval = update_interval_min;
+            } else {
+                update_interval = Math.min(update_interval * 2, update_interval_max);
+            }
+            setTimeout(updateChat, update_interval);
+        });
+    }
+    setTimeout(updateChat, update_interval);
+
+    scrollToBottom();
+    $('#text-entry-content').focus();
 });
 {% endblock %}

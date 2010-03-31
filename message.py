@@ -63,7 +63,10 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 # FIXME timestamps might collide, so we need to introduce
                 #   a new column populated by a counter (sharded?)
                 since_message = Message.all().filter('__key__ =', Key(since_message_key)).get()
-                messages = messages.filter('timestamp >', since_message.timestamp)
+                # need to enumerate query results to access last message
+                messages = [m for m in messages.filter('timestamp >', since_message.timestamp)]
+                if messages:
+                    next_url = 'room/%s/msg/?since=%s' % (room.key(), messages[-1].key())
             elif date_start != '' and date_end != '':
                 # restrict by starting/ending datetime
                 iso8601_format = '%Y-%m-%dT%H:%M:%S'
@@ -77,13 +80,22 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 # return (up to) last 40 messages
                 # FIXME should define '40' as a constant
                 messages = reversed(Message.all().order('-timestamp').fetch(40))
-            url = "/api/"
-            payload = []
-            for message in messages:
-                sender_url = url + "account/" + str(message.sender.key())
-                room_url = url + "room/" + str(message.room.key())
-                payload.append({'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
-                                'sender' : sender_url, 'room' : room_url})
+            url_base = "/api/"
+            payload = {}
+            if messages:
+                payload['messages'] = []
+                for message in messages:
+                    sender_url = url_base + "account/" + str(message.sender.key())
+                    room_url = url_base + "room/" + str(message.room.key())
+                    message_data = {
+                        'timestamp' : message.timestamp.isoformat(),
+                        'content' : message.content, 
+                        'sender' : sender_url,
+                        'room' : room_url,
+                        }
+                    payload['messages'].append(message_data)
+                if next_url:
+                    payload['next'] = url_base + next_url
             json = simplejson.dumps(payload)
             self.response.out.write(json)
 
