@@ -60,7 +60,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             # only create message if content is not empty
             message = Message(sender=sender, room=room, timestamp=timestamp, content=content)
             message.put()
-            payload = {'response_status' : "OK", 'message' : content, 'timestamp' : timestamp}
+            payload = {'response_status' : "OK", 'message' : content, 'timestamp' : timestamp.isoformat()}
         else:
             payload = {'response_status' : "Unknown Error"}
         json = simplejson.dumps(payload)
