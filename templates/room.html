@@ -103,7 +103,8 @@ $(function() {
                 url_message_next = data.next
                 update_interval = update_interval_min;
             } else {
-                update_interval = Math.min(update_interval * 2, update_interval_max);
+                #temporarily change the backoff from exponential to straight. + 2 instead of * x
+                update_interval = Math.min(update_interval + 2, update_interval_max);
             }
             setTimeout(updateChat, update_interval);
         });
