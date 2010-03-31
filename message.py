@@ -46,6 +46,26 @@ class APIMessageHandler(webapp.RequestHandler):
 
 class APIMessageCollectionHandler(webapp.RequestHandler):
 
+    def post(self, room_key):
+        user = users.get_current_user()
+        sender = Account.all().filter('user =', user).get()
+        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        timestamp = datetime.now()
+        content = self.request.get('message')
+        payload = {}
+        if not sender:
+            # no account for this user
+            payload = {'response_status' : "No Account Found"}
+        elif len(content):
+            # only create message if content is not empty
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=content)
+            message.put()
+            payload = {'response_status' : "OK", 'message' : content, 'timestamp' : timestamp}
+        else:
+            payload = {'response_status' : "Unknown Error"}
+        json = simplejson.dumps(payload)
+        self.response.out.write(json)
+
     def get(self, room_key):
         room = Room.all().filter('__key__ =', Key(room_key)).get()
         if not room:
@@ -91,6 +111,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                         'timestamp' : message.timestamp.isoformat(),
                         'content' : message.content, 
                         'sender' : sender_url,
+                        'sender_name' : message.sender.nickname,
                         'room' : room_url,
                         }
                     payload['messages'].append(message_data)

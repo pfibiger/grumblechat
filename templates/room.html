@@ -20,12 +20,12 @@
     {% include "room_message.html" %}
   {% endfor %}
   {% include "room_message.html" %}
-
-  <form id="text-entry" action="/room/{{ room.key }}/msg" method="post">
+  <!-- i can't get this form to work ajaxily nicely with also having an action/method -->
+  <form id="text-entry">
     <div class="span-20 last">
       <div class="span-16 push-4 last">
         <input id="text-entry-content" type="text" name="content" style="width: 560px;"/>
-        <input type="submit" value="Send"/>
+        <input id="send-message" type="submit" value="Send"/>
       </div>
     </div>
   </form>
@@ -61,11 +61,33 @@ $(function() {
     var $chatlog = $('#chatlog');
     var $msg_template = $chatlog.find('.message').last();
 
+    $('#send-message').click(function() {
+      var msg = $('#text-entry-content').val();
+      sendMessage(msg);
+    });
+
     function scrollToBottom() {
         $('html').scrollTop($('html').attr('scrollHeight'));
     }
-
-
+    function sendMessage(msg) {
+        var post_url = '/api/room/{{ room.key }}/msg/';
+        $.ajax({
+            url: post_url,
+            type: "POST",
+            data: { message: msg },
+            success: function(data) {
+                var $msg_new = $msg_template.clone();
+                $msg_new.css('display', '');
+                $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(response.timestamp)));
+                $msg_new.find('.msg-sender').html(response.sender_name); // FIXME need to maintain user info for nicknames
+                $msg_new.find('.msg-content').html(response.message);
+                $msg_template.before($msg_new);
+            },
+            error: function() {
+                alert("unknown error, try again");
+            }
+        });
+    }
     function updateChat() {
         $.getJSON(url_message_next, function(data) {
             if (data.messages) {
@@ -73,7 +95,7 @@ $(function() {
                     var $msg_new = $msg_template.clone();
                     $msg_new.css('display', '');
                     $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
-                    $msg_new.find('.msg-sender').html('&lt;unknown&gt;'); // FIXME need to maintain user info for nicknames
+                    $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;'); // FIXME need to maintain user info for nicknames
                     $msg_new.find('.msg-content').html(message.content);
                     $msg_template.before($msg_new);
                 });
@@ -91,4 +113,5 @@ $(function() {
     scrollToBottom();
     $('#text-entry-content').focus();
 });
+
 {% endblock %}

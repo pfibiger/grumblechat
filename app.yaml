@@ -28,6 +28,9 @@ handlers:
 - url: /api/room/[^/]+/msg/[^/]*
   script: message.py
 
+- url: /api/room/[^/]+/msg/
+  script: message.py
+
 - url: /css
   static_dir: css 
   expiration: 1d
