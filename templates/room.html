@@ -20,7 +20,8 @@
     {% include "room_message.html" %}
   {% endfor %}
   {% include "room_message.html" %}
-  <form id="text-entry" action="/room/{{ room.key }}/msg" method="post">    <div class="span-20 last">
+  <form id="text-entry" action="/room/{{ room.key }}/msg" method="post">  
+    <div class="span-20 last">
       <div class="span-16 push-4 last">
         <input id="text-entry-content" type="text" name="content" style="width: 560px;"/>
         <input id="send-message" type="submit" value="Send"/>
@@ -60,7 +61,7 @@ $(function() {
     var $msg_template = $chatlog.find('.message').last();
 
     $('#text-entry').submit(function() {
-      var msg = $('text-entry-content').val();
+      var msg = $('#text-entry-content').val();
       sendMessage(msg);
       return false;
     });
@@ -78,7 +79,7 @@ $(function() {
                 var $msg_new = $msg_template.clone();
                 $msg_new.css('display', '');
                 $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(response.timestamp)));
-                $msg_new.find('.msg-sender').html(response.sender_name); // FIXME need to maintain user info for nicknames
+                $msg_new.find('.msg-sender').html(response.sender_name);
                 $msg_new.find('.msg-content').html(response.message);
                 $msg_template.before($msg_new);
             },
@@ -94,7 +95,7 @@ $(function() {
                     var $msg_new = $msg_template.clone();
                     $msg_new.css('display', '');
                     $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
-                    $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;'); // FIXME need to maintain user info for nicknames
+                    $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
                     $msg_new.find('.msg-content').html(message.content);
                     $msg_template.before($msg_new);
                 });
