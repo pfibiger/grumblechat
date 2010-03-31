@@ -59,7 +59,7 @@ $(function() {
     var $chatlog = $('#chatlog');
     var $msg_template = $chatlog.find('.message').last();
 
-    $('#send-message').submit(function() {
+    $('#text-entry').submit(function() {
       var msg = $('text-entry-content').val();
       sendMessage(msg);
       return false;
@@ -102,8 +102,8 @@ $(function() {
                 url_message_next = data.next
                 update_interval = update_interval_min;
             } else {
-                //temporarily change the backoff from exponential to straight. + 2 instead of * x
-                update_interval = Math.min(update_interval + 2, update_interval_max);
+                //temporarily change the backoff from exponential to linear. + 2000 instead of * x
+                update_interval = Math.min(update_interval + 2000, update_interval_max);
             }
             setTimeout(updateChat, update_interval);
         });
