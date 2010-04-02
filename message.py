@@ -22,7 +22,7 @@ class MessageCollectionHandler(webapp.RequestHandler):
             self.response.out.write(template.render('templates/account_create.html', None))
         elif len(content):
             # only create message if content is not empty
-            message = Message(sender=sender, room=room, timestamp=timestamp, content=content)
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=content, event=0)
             message.put()
         self.redirect('/room/' + room_key)
 
@@ -61,7 +61,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             payload = {'response_status' : "No Account Found"}
         elif len(content):
             # only create message if content is not empty
-            message = Message(sender=sender, room=room, timestamp=timestamp, content=content)
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=content, event=0)
             message.put()
             payload = {'response_status' : "OK", 'message' : content, 'timestamp' : timestamp.isoformat()}
         else:
