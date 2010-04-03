@@ -88,12 +88,16 @@ $(function() {
         $.getJSON(url_message_next, function(data) {
             if (data.messages) {
                 $.each(data.messages, function(index, message) {
-                    var $msg_new = $msg_template.clone();
-                    $msg_new.css('display', '');
-                    $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
-                    $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
-                    $msg_new.find('.msg-content').html(message.content);
-                    $msg_template.before($msg_new);
+                    if (message.event == 'message') {
+                        var $msg_new = $msg_template.clone();
+                        $msg_new.css('display', '');
+                        $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
+                        $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
+                        $msg_new.find('.msg-content').html(message.content);
+                        $msg_template.before($msg_new);
+                    } else {
+                        // TODO handle other event types (does JS have a switch statement? if so, use it)
+                    }
                 });
                 $messages = $chatlog.children('.message:visible');
                 if ($messages.length > message_display_max) {

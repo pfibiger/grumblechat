@@ -22,7 +22,8 @@ class MessageCollectionHandler(webapp.RequestHandler):
             self.response.out.write(template.render('templates/account_create.html', None))
         elif len(content):
             # only create message if content is not empty
-            message = Message(sender=sender, room=room, timestamp=timestamp, content=content, event=0)
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
+                              event=Message_event_codes['message'])
             message.put()
         self.redirect('/room/' + room_key)
 
@@ -43,7 +44,7 @@ class APIMessageHandler(webapp.RequestHandler):
         sender_url = url + "account/" + str(message.sender.key())
         room_url = url + "room/" + str(message.room.key())
         payload = {'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
-                   'sender' : sender_url, 'room' : room_url}
+                   'sender' : sender_url, 'room' : room_url, 'event' : Message_event_names[message.event]}
         json = simplejson.dumps(payload)
         self.response.out.write(json)
 
@@ -61,7 +62,8 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             payload = {'response_status' : "No Account Found"}
         elif len(content):
             # only create message if content is not empty
-            message = Message(sender=sender, room=room, timestamp=timestamp, content=content, event=0)
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
+                              event=Message_event_codes['message'])
             message.put()
             payload = {'response_status' : "OK", 'message' : content, 'timestamp' : timestamp.isoformat()}
         else:
@@ -117,6 +119,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                         'sender' : sender_url,
                         'sender_name' : message.sender.nickname,
                         'room' : room_url,
+                        'event' : Message_event_names[message.event],
                         }
                     payload['messages'].append(message_data)
                 if next_url:

@@ -17,7 +17,7 @@ class RoomList(db.Model):
     room = db.ReferenceProperty(reference_class=Room, required=True)
     status = db.StringProperty(default='')
 
-message_events = {
+Message_event_names = {
     0: 'message',
     1: 'topic',
     2: 'join',
@@ -25,11 +25,10 @@ message_events = {
     4: 'action',
     5: 'status',
     }
-
+Message_event_codes = dict([(v, k) for (k, v) in Message_event_names.items()])
 class Message(db.Model):
     sender = db.ReferenceProperty(reference_class=Account, required=True)
     room = db.ReferenceProperty(reference_class=Room, required=True)
     timestamp = db.DateTimeProperty(auto_now_add=True, required=True)
-    event = db.IntegerProperty(required=True, choices=message_events.keys())
+    event = db.IntegerProperty(required=True, choices=Message_event_codes.values())
     content = db.StringProperty(required=True)
-    
