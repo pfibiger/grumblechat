@@ -140,11 +140,38 @@ class TopicHandler(webapp.RequestHandler):
         elif len(topic):
 			room.topic = topic
 			room.put()
-        self.redirect('/room/' + room_key)       
+        self.redirect('/room/' + room_key)
+        
+class APITopicHandler(webapp.RequestHandler):
+
+    def post(self, room_key):
+        user = users.get_current_user()
+        sender = Account.all().filter('user =', user).get()
+        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        topic = self.request.get('topic')
+        timestamp = datetime.now()
+        #content = self.request.get('message')
+        payload = {}
+        if not sender:
+            # no account for this user
+            payload = {'response_status' : "No Account Found"}
+        elif len(content):
+            # only create message if content is not empty
+            room.topic = topic
+            room.put()
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
+                              event=Message_event_codes['topic'])
+            message.put()
+            payload = {'response_status' : "OK", 'message' : topic, 'timestamp' : timestamp.isoformat()}
+        else:
+            payload = {'response_status' : "Unknown Error"}
+        json = simplejson.dumps(payload)
+        self.response.out.write(json)    
 
 
 application = webapp.WSGIApplication([(r'/room/([^/]+)/msg', MessageCollectionHandler),
                                       (r'/room/([^/]+)/topic',TopicHandler),
+                                      (r'/api/room/([^/]+)/topic',APITopicHandler),
                                       (r'/api/room/([^/]+)/msg/', APIMessageCollectionHandler),
                                       (r'/api/room/([^/]+)/msg/([^/]+)', APIMessageHandler),
                                       ],

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+{% block heading %}Room: {{ room.name }}{% endblock %}
+
+
+{% block content %}
+
+
+<h3>Chat Log</h3>
+
+<div id="chatlog" class="span-20">
+  {% for message in messages %}
+    {% include "room_message.html" %}
+  {% endfor %}
+  {% include "room_message.html" %}
+</div>
+
+<div id="sidebar" class="span-4 last">
+    <h3>Users</h3>
+    <table>
+      {% for roomlisting in roomlist %}
+      <tr>
+        <td>{{ roomlisting.account.gravatar_tag }}
+        {{ roomlisting.account.nickname }}</td>
+      </tr>
+      {% endfor %}
+    </table></div>
+
+    <form action="/room/{{ room.key }}/leave" method="post">
+      <p>
+        <input type="submit" value="Leave Room"/>
+      </p>
+    </form>
+
+{% endblock %}

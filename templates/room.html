@@ -6,12 +6,7 @@
 
 {% block content %}
 
-    <h3>Topic: 
-	    <form action="/room/{{ room.key }}/topic" method="post">
-	        <input type="text" name="topic" value="{{ room.topic }}"/>
-	        <input type="submit" value="Send"/>
-	    </form>
-	</h3>
+    <h3 class="edit" id="room_topic">{{ room.topic }}</h3>
 
 <h3>Chat Log</h3>
 
@@ -62,6 +57,26 @@ $(function() {
     var $msg_template = $chatlog.find('.message').last();
     var $text_entry_content = $('#text-entry-content');
 
+    $('.edit').editable(function(topic) { 
+        var post_url = '/room/{{ room.key }}/topic';
+        $.ajax({
+            url: post_url,
+            type: "POST",
+            data: { topic: topic },
+            error: function() {
+                alert("unknown error, try again");
+            }
+        });
+        return topic;
+     }, { 
+        indicator : 'Saving...',
+        tooltip   : 'Click to edit...',
+        id   : 'room_topic',
+        name : 'topic'
+    });
+
+
+    
     $('#text-entry').submit(function() {
       var msg = $text_entry_content.val();
       sendMessage(msg);
