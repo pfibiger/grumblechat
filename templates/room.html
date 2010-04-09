@@ -6,7 +6,7 @@
 
 {% block content %}
 
-    <h3 class="edit" id="room_topic">{{ room.topic }}</h3>
+    <h3 class="edit" id="room-topic">{{ room.topic }}</h3>
 
 <h3>Chat Log</h3>
 
@@ -71,7 +71,7 @@ $(function() {
      }, { 
         indicator : 'Saving...',
         tooltip   : 'Click to edit...',
-        id   : 'room_topic',
+        id   : 'room-topic',
         name : 'topic'
     });
 
@@ -112,7 +112,7 @@ $(function() {
                             $msg_new.find('.msg-content').html(message.content);
                             $msg_template.before($msg_new);                        
                         case 'topic':
-                            $('#room_topic').text(message.content)
+                            $('#room-topic').text(message.content)
                         default:
                         // TODO handle other event types (does JS have a switch statement? if so, use it)
                     }
