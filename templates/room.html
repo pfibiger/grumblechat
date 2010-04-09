@@ -112,7 +112,7 @@ $(function() {
                             $msg_new.find('.msg-content').html(message.content);
                             $msg_template.before($msg_new);                        
                         case 'topic':
-                            $("room_topic").html(message.content)
+                            $('#room_topic').text(message.content)
                         default:
                         // TODO handle other event types (does JS have a switch statement? if so, use it)
                     }
