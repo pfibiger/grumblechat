@@ -58,7 +58,7 @@ $(function() {
     var $text_entry_content = $('#text-entry-content');
 
     $('.edit').editable(function(topic) { 
-        var post_url = '/room/{{ room.key }}/topic';
+        var post_url = '/api/room/{{ room.key }}/topic';
         $.ajax({
             url: post_url,
             type: "POST",
@@ -103,16 +103,20 @@ $(function() {
         $.getJSON(url_message_next, function(data) {
             if (data.messages) {
                 $.each(data.messages, function(index, message) {
-                    if (message.event == 'message') {
-                        var $msg_new = $msg_template.clone();
-                        $msg_new.css('display', '');
-                        $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
-                        $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
-                        $msg_new.find('.msg-content').html(message.content);
-                        $msg_template.before($msg_new);
-                    } else {
+                    switch(message.event) {
+                        case 'message':
+                            var $msg_new = $msg_template.clone();
+                            $msg_new.css('display', '');
+                            $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
+                            $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
+                            $msg_new.find('.msg-content').html(message.content);
+                            $msg_template.before($msg_new);                        
+                        case 'topic':
+                            $("room_topic").html(message.content)
+                        default:
                         // TODO handle other event types (does JS have a switch statement? if so, use it)
                     }
+
                 });
                 $messages = $chatlog.children('.message:visible');
                 if ($messages.length > message_display_max) {
