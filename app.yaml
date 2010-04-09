@@ -24,6 +24,10 @@ handlers:
 - url: /room/[^/]+/topic
   script: message.py
   login: required
+
+- url: /api/room/[^/]+/topic
+  script: message.py
+  login: required
   
 - url: /api/room/[^/]+/msg/[^/]*
   script: message.py

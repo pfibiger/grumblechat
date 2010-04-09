@@ -155,11 +155,11 @@ class APITopicHandler(webapp.RequestHandler):
         if not sender:
             # no account for this user
             payload = {'response_status' : "No Account Found"}
-        elif len(content):
-            # only create message if content is not empty
+        elif len(topic):
+            # only create message if topic is not empty
             room.topic = topic
             room.put()
-            message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=topic,
                               event=Message_event_codes['topic'])
             message.put()
             payload = {'response_status' : "OK", 'message' : topic, 'timestamp' : timestamp.isoformat()}
