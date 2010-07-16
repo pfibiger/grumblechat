@@ -27,7 +27,7 @@
 
 <div id="sidebar" class="span-4 last">
     <h3>Users</h3>
-    <table>
+    <table id="userlist">
       {% for roomlisting in roomlist %}
       <tr id="user-{{ roomlisting.account.nickname }}">
         <td>{{ roomlisting.account.gravatar_tag }}
@@ -112,10 +112,13 @@ $(function() {
                             $msg_new.find('.msg-content').html(message.content);
                             $msg_template.before($msg_new);                        
                         case 'topic':
-                            $('#room-topic').text(message.content)
+                            $('#room-topic').text(message.content);
                         case 'part':
-                            $channelname = '#user-' + message.sender_name;
-                            $($channelname).remove();
+                            var $removeuser = 'user-' + message.sender_name;
+                            $("#" + $removeuser).remove();
+                        case 'join':
+                            $tablerow_toinsert = '<tr id="user-' + message.sender_name + '"><td>' +  message.content + ' ' + message.sender_name + '</td></tr>';
+                            $('#userlist tr:last').after($tablerow_toinsert);
                         default:
                         // TODO handle other event types (does JS have a switch statement? if so, use it)
                     }

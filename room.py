@@ -49,8 +49,18 @@ class RoomHandler(webapp.RequestHandler):
         roomlist_query.filter('room = ', room)
         roomlist = roomlist_query.filter('account = ', account).get()
         if not roomlist:
+            #add us to the room we've just joined.
             roomlist = RoomList(account=account, room=room)
             roomlist.put()
+            #send a message to update everyone elses contact list
+            user = users.get_current_user()
+            sender = Account.all().filter('user =', user).get()
+            timestamp = datetime.now()
+            content = sender.gravatar_tag
+            message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
+                              event=Message_event_codes['join'])
+            message.put()
+            
         roomlist = RoomList.all().filter('room = ', room)
         context = {
             'room': room,

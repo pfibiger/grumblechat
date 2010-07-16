@@ -34,6 +34,7 @@ class AccountCollectionHandler(webapp.RequestHandler):
                                                     ))
         else:
             account = Account(user=user, nickname=nickname)
+            account.gravatar_tag = gravatar(user.email())
             account.put()
             self.redirect('/account/' + str(account.key()))
             
