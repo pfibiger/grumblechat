@@ -4,6 +4,7 @@ from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 from account import get_account
+from datetime import datetime
 
 from models import *
 
@@ -70,6 +71,14 @@ class LeaveHandler(webapp.RequestHandler):
         roomlist_query.filter('room = ', room)
         roomlist = roomlist_query.filter('account = ', account).get()
         roomlist.delete()
+        #send a message to the room about the part
+        user = users.get_current_user()
+        sender = Account.all().filter('user =', user).get()
+        timestamp = datetime.now()
+        content = "leaving"
+        message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
+                          event=Message_event_codes['part'])
+        message.put()
         self.redirect('/room/')
 
 application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),

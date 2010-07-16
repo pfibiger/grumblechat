@@ -29,7 +29,7 @@
     <h3>Users</h3>
     <table>
       {% for roomlisting in roomlist %}
-      <tr>
+      <tr id="user-{{ roomlisting.account.nickname }}">
         <td>{{ roomlisting.account.gravatar_tag }}
         {{ roomlisting.account.nickname }}</td>
       </tr>
@@ -113,6 +113,9 @@ $(function() {
                             $msg_template.before($msg_new);                        
                         case 'topic':
                             $('#room-topic').text(message.content)
+                        case 'part':
+                            $channelname = '#user-' + message.sender_name;
+                            $($channelname).remove();
                         default:
                         // TODO handle other event types (does JS have a switch statement? if so, use it)
                     }
