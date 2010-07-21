@@ -85,6 +85,17 @@ $(function() {
       return false;
     });
 
+    $(window).bind("beforeunload", function(){
+         var post_url = '/room/{{ room.key }}/leave';
+         $.ajax({
+             url: post_url,
+             type: "POST",
+             error: function() {
+                 alert("unknown error, try again");
+             }
+         });
+     });
+
     function scrollToBottom() {
         $('html').scrollTop($('html').attr('scrollHeight'));
     }
@@ -121,7 +132,7 @@ $(function() {
                             break;
                         case 'join':
                             var $adduser = 'user-' + message.sender_name;
-                            if ($("#" + $radduser).length == 0){
+                            if ($("#" + $adduser).length == 0){
                                 $tablerow_toinsert = '<tr id="user-' + message.sender_name + '"><td>' +  message.content + ' ' + message.sender_name + '</td></tr>';
                                 $('#userlist tr:last').after($tablerow_toinsert);
                             }
