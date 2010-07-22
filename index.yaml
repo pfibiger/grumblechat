@@ -12,6 +12,13 @@ indexes:
 
 - kind: Message
   properties:
+  - name: event
+  - name: room
+  - name: timestamp
+    direction: desc
+
+- kind: Message
+  properties:
   - name: room
   - name: timestamp
 

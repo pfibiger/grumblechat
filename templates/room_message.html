@@ -1,4 +1,4 @@
-<div class="message" {% if not message %} style="display: none;" {% endif %}>
+<div id="message-{{ message.sender.nickname }}-{{ message.timestamp }}"class="message" {% if not message %} style="display: none;" {% endif %}>
   <div class="msg-timestamp span-2">{% if message %}{{ message.timestamp|time:"H:i:s" }}{% endif %}</div>
   <div class="msg-sender span-2" style="white-space:nowrap">{% if message %}&lt;{{ message.sender.nickname }}&gt;{% endif %}</div>
   <div class="msg-content span-16 last">{% if message %}{{ message.content }}{% endif %}</div>

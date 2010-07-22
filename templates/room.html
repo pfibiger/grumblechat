@@ -109,6 +109,12 @@ $(function() {
                 alert("unknown error, try again");
             }
         });
+        var $msg_new = $msg_template.clone();
+        $msg_new.css('display', '');
+        $msg_new.find('.msg-timestamp').html("message-temp-local");
+        $msg_new.find('.msg-sender').html('&lt;' + '{{ roomlisting.account.nickname }}' + '&gt;');
+        $msg_new.find('.msg-content').html(message.content);
+        $msg_template.before($msg_new);
     }
     function updateChat() {
         $.getJSON(url_message_next, function(data) {
@@ -116,12 +122,20 @@ $(function() {
                 $.each(data.messages, function(index, message) {
                     switch(message.event) {
                         case 'message':
-                            var $msg_new = $msg_template.clone();
-                            $msg_new.css('display', '');
-                            $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
-                            $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
-                            $msg_new.find('.msg-content').html(message.content);
-                            $msg_template.before($msg_new);
+                            var $found_message = $('.chatlog').find('.message-temp-local');
+                            if ($found_message.html == message.content) {
+                                // just update the id, since we already wrote this one locally.
+                                var $new_id = "message-" + message.sender_name + "-" + message.timestamp;
+                                $found_message.attr("id",$new_id);
+                            } 
+                            else {
+                                var $msg_new = $msg_template.clone();
+                                $msg_new.css('display', '');
+                                $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
+                                $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
+                                $msg_new.find('.msg-content').html(message.content);
+                                $msg_template.before($msg_new);
+                            }
                             break;                      
                         case 'topic':
                             $('#room-topic').text(message.content);
@@ -148,7 +162,7 @@ $(function() {
                     $messages.slice(0, $messages.length - message_display_max).remove();
                 }
                 scrollToBottom();
-                url_message_next = data.next
+                url_message_next = data.next;
                 update_interval = update_interval_min;
             } else {
                 //temporarily change the backoff from exponential to linear. + 2000 instead of * x
