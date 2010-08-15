@@ -32,3 +32,4 @@ class Message(db.Model):
     timestamp = db.DateTimeProperty(auto_now_add=True, required=True)
     event = db.IntegerProperty(required=True, choices=Message_event_codes.values())
     content = db.StringProperty(required=True)
+    extra = db.StringProperty()

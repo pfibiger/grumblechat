@@ -58,14 +58,16 @@ class RoomHandler(webapp.RequestHandler):
             user = users.get_current_user()
             sender = Account.all().filter('user =', user).get()
             timestamp = datetime.now()
-            content = sender.gravatar_tag
+            extra = sender.gravatar_tag
+            content = 'joining'
             message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
-                              event=Message_event_codes['join'])
+                              event=Message_event_codes['join'], extra=extra)
             message.put()
             
         roomlist = RoomList.all().filter('room = ', room)
         context = {
             'room': room,
+            'account': account,
             'roomlist': roomlist,
             'messages': messages,
             }

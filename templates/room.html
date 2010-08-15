@@ -78,52 +78,50 @@ $(function() {
 
     
     $('#text-entry').submit(function() {
-      var msg = $text_entry_content.val();
-      sendMessage(msg);
-      $text_entry_content.val('');
-      update_interval = update_interval_min; // FIXME need to cancel pending update and retrigger it with this new interval
-      return false;
+        var msg = $text_entry_content.val();
+        sendMessage(msg);
+        $text_entry_content.val('');
+        update_interval = update_interval_min; // FIXME need to cancel pending update and retrigger it with this new interval
+        return false;
     });
-
-    $(window).bind("beforeunload", function(){
-         var post_url = '/room/{{ room.key }}/leave';
-         $.ajax({
-             url: post_url,
-             type: "POST",
-             error: function() {
-                 alert("unknown error, try again");
-             }
-         });
-     });
 
     function scrollToBottom() {
         $('html').scrollTop($('html').attr('scrollHeight'));
     }
     function sendMessage(msg) {
+        var $msg_new = $msg_template.clone();
+        var myDate=new Date();
+        $msg_new.css('display', '');
+        $msg_new.attr("id","message-temp-local");
+        $msg_new.find('.msg-timestamp').html(chat.formatTime(myDate));
+        $msg_new.find('.msg-sender').html('&lt;' + '{{ account.nickname }}' + '&gt;');
+        $msg_new.find('.msg-content').html(msg);
+        $msg_template.before($msg_new);
         var post_url = '/api/room/{{ room.key }}/msg/';
         $.ajax({
             url: post_url,
             type: "POST",
             data: { message: msg },
-            error: function() {
-                alert("unknown error, try again");
+            success: function(){
+            },
+            error: function(){
+                alert('failure');
             }
         });
-        var $msg_new = $msg_template.clone();
-        $msg_new.css('display', '');
-        $msg_new.find('.msg-timestamp').html("message-temp-local");
-        $msg_new.find('.msg-sender').html('&lt;' + '{{ roomlisting.account.nickname }}' + '&gt;');
-        $msg_new.find('.msg-content').html(message.content);
-        $msg_template.before($msg_new);
+        return false;
     }
+    
     function updateChat() {
         $.getJSON(url_message_next, function(data) {
             if (data.messages) {
                 $.each(data.messages, function(index, message) {
                     switch(message.event) {
                         case 'message':
-                            var $found_message = $('.chatlog').find('.message-temp-local');
-                            if ($found_message.html == message.content) {
+                            var $found_message = $('#message-temp-local');
+                            var $found_content = $found_message.find('.msg-content');
+                            //console.log($found_content);
+                            //alert ($found_content.html());
+                            if ($found_content.html() == message.content) {
                                 // just update the id, since we already wrote this one locally.
                                 var $new_id = "message-" + message.sender_name + "-" + message.timestamp;
                                 $found_message.attr("id",$new_id);
@@ -147,7 +145,7 @@ $(function() {
                         case 'join':
                             var $adduser = 'user-' + message.sender_name;
                             if ($("#" + $adduser).length == 0){
-                                $tablerow_toinsert = '<tr id="user-' + message.sender_name + '"><td>' +  message.content + ' ' + message.sender_name + '</td></tr>';
+                                $tablerow_toinsert = '<tr id="user-' + message.sender_name + '"><td>' +  message.extra + ' ' + message.sender_name + '</td></tr>';
                                 $('#userlist tr:last').after($tablerow_toinsert);
                             }
                             break;

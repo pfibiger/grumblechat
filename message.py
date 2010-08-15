@@ -17,13 +17,14 @@ class MessageCollectionHandler(webapp.RequestHandler):
         room = Room.all().filter('__key__ =', Key(room_key)).get()
         timestamp = datetime.now()
         content = self.request.get('content')
+        extra = self.request.get('extra')
         if not sender:
             # no account for this user
             self.response.out.write(template.render('templates/account_create.html', None))
         elif len(content):
             # only create message if content is not empty
             message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
-                              event=Message_event_codes['message'])
+                              event=Message_event_codes['message'], extra=extra)
             message.put()
         self.redirect('/room/' + room_key)
 
@@ -44,7 +45,8 @@ class APIMessageHandler(webapp.RequestHandler):
         sender_url = url + "account/" + str(message.sender.key())
         room_url = url + "room/" + str(message.room.key())
         payload = {'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
-                   'sender' : sender_url, 'room' : room_url, 'event' : Message_event_names[message.event]}
+                   'sender' : sender_url, 'room' : room_url, 'event' : Message_event_names[message.event],
+                   'extra' : extra}
         json = simplejson.dumps(payload)
         self.response.out.write(json)
 
@@ -120,6 +122,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                         'sender_name' : message.sender.nickname,
                         'room' : room_url,
                         'event' : Message_event_names[message.event],
+                        'extra' : message.extra,
                         }
                     payload['messages'].append(message_data)
                 if next_url:
