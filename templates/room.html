@@ -90,6 +90,7 @@ $(function() {
     function scrollToBottom() {
         var dest = $('html').attr('scrollHeight') - $('html').attr('clientHeight');
         $('html').scrollTop(dest);
+        $('body').scrollTop(dest); // FIXME this is a chromium workaround for bug #2891
     }
     function sendMessage(msg) {
         var $msg_new = $msg_template.clone();
