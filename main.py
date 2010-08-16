@@ -10,13 +10,9 @@ class MainHandler(webapp.RequestHandler):
   def get(self):
     account = get_account()
     if (account):
-        self.response.out.write('Hello ' + account.nickname)
-        self.response.out.write("<br>")
-        self.response.out.write("<a href='/room/'>Go join a room</a>")
+        self.redirect('/room/')
     else:
-        self.response.out.write("Welcome, new chatter. First you're going to need to \
-                                <a href='/account/'>create a new account.</a>")
-
+        self.redirect('/account/')
 
 def main():
   application = webapp.WSGIApplication([('/', MainHandler)],

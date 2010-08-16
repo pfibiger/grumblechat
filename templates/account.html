@@ -1,5 +1,7 @@
-<html>
-  <body>
+{% extends "base.html" %}
+
+{% block content %}
+
     <h2>Gravatar: {{ account.gravatar_tag }}</h2>
     <h2>Account: {{ account.user.email }}</h2>
 
@@ -7,5 +9,4 @@
     
     <p><a href="/">Home</a> | <a href="/room/">Rooms List</a></p>
 
-  </body>
-</html>
+{% endblock %}
