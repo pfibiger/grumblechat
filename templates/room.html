@@ -86,7 +86,8 @@ $(function() {
     });
 
     function scrollToBottom() {
-        $('html').scrollTop($('html').attr('scrollHeight'));
+        var dest = $('html').attr('scrollHeight') - $('html').attr('clientHeight');
+        $('html').scrollTop(dest);
     }
     function sendMessage(msg) {
         var $msg_new = $msg_template.clone();
@@ -97,6 +98,7 @@ $(function() {
         $msg_new.find('.msg-sender').html('&lt;' + '{{ account.nickname }}' + '&gt;');
         $msg_new.find('.msg-content').html(msg);
         $msg_template.before($msg_new);
+        scrollToBottom();
         var post_url = '/api/room/{{ room.key }}/msg/';
         $.ajax({
             url: post_url,
