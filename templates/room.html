@@ -79,9 +79,11 @@ $(function() {
     
     $('#text-entry').submit(function() {
         var msg = $text_entry_content.val();
-        sendMessage(msg);
-        $text_entry_content.val('');
-        update_interval = update_interval_min; // FIXME need to cancel pending update and retrigger it with this new interval
+        if (msg.length > 0) {
+            sendMessage(msg);
+            $text_entry_content.val('');
+            update_interval = update_interval_min; // FIXME need to cancel pending update and retrigger it with this new interval
+        }
         return false;
     });
 
