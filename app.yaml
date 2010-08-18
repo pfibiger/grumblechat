@@ -35,6 +35,10 @@ handlers:
 - url: /api/room/[^/]+/msg/
   script: message.py
 
+- url: /tasks/session
+  script: tasks.py
+  login: admin
+
 - url: /css
   static_dir: css 
   expiration: 1d

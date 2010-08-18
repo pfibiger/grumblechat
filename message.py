@@ -8,6 +8,8 @@ from datetime import datetime
 from django.utils import simplejson
 
 from models import *
+from utils import *
+
 
 class MessageCollectionHandler(webapp.RequestHandler):
 
@@ -80,6 +82,9 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             self.error(404)
             self.response.out.write("no such room")
         else:
+            account = get_account()
+            roomlist = RoomList.all().filter('account =', account).filter('room =', room).get()
+            roomlist.update_presence()
             since_message_key = self.request.get('since')
             date_start = self.request.get('start')
             date_end = self.request.get('end')
@@ -107,7 +112,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             else:
                 # return (up to) last 40 messages
                 # FIXME should define '40' as a constant
-                messages = reversed(Message.all().order('-timestamp').fetch(40))
+                messages = reversed(Message.all().filter('room =', room).order('-timestamp').fetch(40))
             url_base = "/api/"
             payload = {}
             if messages:

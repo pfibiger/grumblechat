@@ -2,7 +2,7 @@ import wsgiref.handlers
 
 
 from google.appengine.ext import webapp
-from account import get_account
+from utils import *
 
 
 class MainHandler(webapp.RequestHandler):
