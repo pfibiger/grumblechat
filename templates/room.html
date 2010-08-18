@@ -88,10 +88,17 @@ $(function() {
     });
 
     function scrollToBottom() {
+        // trim message list
+        $messages = $chatlog.children('.message:visible');
+        if ($messages.length > message_display_max) {
+            $messages.slice(0, $messages.length - message_display_max).remove();
+        }
+        // scroll to bottom
         var dest = $('html').attr('scrollHeight') - $('html').attr('clientHeight');
         $('html').scrollTop(dest);
         $('body').scrollTop(dest); // FIXME this is a chromium workaround for bug #2891
     }
+
     function sendMessage(msg) {
         var $msg_new = $msg_template.clone();
         var myDate=new Date();
@@ -159,10 +166,6 @@ $(function() {
                     }
 
                 });
-                $messages = $chatlog.children('.message:visible');
-                if ($messages.length > message_display_max) {
-                    $messages.slice(0, $messages.length - message_display_max).remove();
-                }
                 scrollToBottom();
                 url_message_next = data.next;
                 update_interval = update_interval_min;
