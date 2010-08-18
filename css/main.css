@@ -1,7 +1,16 @@
 #chatlog {
     background: #f0f0f0;
+    font-size: 120%;
 }
 
 #sidebar {
     background: #e0e8ff;
+}
+
+#userlist {
+    font-size: 120%;
+}
+
+#userlist img {
+    vertical-align: middle;
 }
