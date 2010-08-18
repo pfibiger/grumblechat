@@ -3,8 +3,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
-import urllib, hashlib
+
 from models import *
+from utils import *
 
 
 class AccountCollectionHandler(webapp.RequestHandler):
@@ -15,10 +16,6 @@ class AccountCollectionHandler(webapp.RequestHandler):
         account = get_account()
         if account:
             # account exists
-            if not account.gravatar_tag:
-                account.gravatar_tag = gravatar(account.user.email())
-                #account.gravatar_tag = "test123"
-                account.put()
             self.redirect('/account/' + str(account.key()))
         else:
             # no account for this user
@@ -60,24 +57,6 @@ application = webapp.WSGIApplication([('/account/', AccountCollectionHandler),
 
 def main():
     run_wsgi_app(application)
-
-def gravatar(email):
-    size=30
-    rating='g'
-    default_image='identicon'
-    gravatar_url = "http://www.gravatar.com/avatar.php?"
-    #gravatar_url += hashlib.md5(email).hexdigest()
-    gravatar_url += urllib.urlencode({
-        'gravatar_id':hashlib.md5(email).hexdigest(),
-        's':str(size),
-        'r':rating,
-        'd':default_image})
-    return """<img src="%s" alt="gravatar" />""" % gravatar_url
-
-def get_account():
-    user = users.get_current_user()
-    account = Account.all().filter('user =', user).get()
-    return account
 
 
 if __name__ == '__main__':

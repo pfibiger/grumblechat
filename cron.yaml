@@ -1,0 +1,4 @@
+cron:
+- description: session housekeeping
+  url: /tasks/session
+  schedule: every 1 minutes
