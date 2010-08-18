@@ -112,7 +112,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             else:
                 # return (up to) last 40 messages
                 # FIXME should define '40' as a constant
-                messages = reversed(Message.all().order('-timestamp').fetch(40))
+                messages = reversed(Message.all().filter('room =', room).order('-timestamp').fetch(40))
             url_base = "/api/"
             payload = {}
             if messages:
