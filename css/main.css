@@ -14,3 +14,8 @@
 #userlist img {
     vertical-align: middle;
 }
+
+#chatlog img.embedded-image {
+    max-width: 400px;
+    max-height: 400px;
+}

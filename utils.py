@@ -62,6 +62,16 @@ def get_account():
 def transform_message(message):
     content = message.content
     r="((?:https?)://[^ \t\n\r()\"']+)"
-    content=re.sub(r,r'<a href="\1">\1</a>',content)
+    m = re.search(r, content)
+    if (m):
+        url = m.group(1)
+        #content=re.sub(r,r'<img src="\1">',content)
+        #content=re.sub(r,r'<a href="\1">\1</a>',content)
+        r="(?i)\.(jpg|png|gif)$"
+        m = re.search(r,url)
+        if (m):
+            content = '<img class="embedded-image" src="' + url + '">'
+        else:
+            content = '<a href="' + url + '">' + url + '</a>'
     message.content = content
     return message
