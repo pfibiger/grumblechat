@@ -24,9 +24,11 @@ chat = function() {
       date.setUTCHours(Number(timeHours));
       date.setUTCMinutes(Number(timeParts[1]));
       date.setUTCSeconds(Number(timeSecParts[0]));
-      if (timeSecParts[1]) date.setUTCMilliseconds(Number(timeSecParts[1]));
+      if (timeSecParts[1]) {
+        date.setUTCMilliseconds(Math.round(Number(timeSecParts[1])/1000));
+      }
 
-      // by using setUTC methods the date has already been converted to local time(?)
+      // by using setUTC methods the date has already been converted to local time
       return date;
     },
 

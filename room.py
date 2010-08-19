@@ -71,6 +71,7 @@ class RoomHandler(webapp.RequestHandler):
             'account': account,
             'roomlist': roomlist,
             'messages': messages,
+            'message_event_names': Message_event_names,
             }
         if messages:
             context['message_last_key'] = messages[-1].key()
@@ -91,6 +92,7 @@ application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
                                      debug=True)
 
 def main():
+    webapp.template.register_template_library('filters')
     run_wsgi_app(application)
 
 if __name__ == '__main__':

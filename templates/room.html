@@ -6,26 +6,7 @@
 
 {% block content %}
 
-    <h3 class="edit" id="room-topic">{{ room.topic }}</h3>
-
-<h3>Chat Log</h3>
-
-<div id="chatlog" class="span-20">
-  {% for message in messages %}
-    {% include "room_message.html" %}
-  {% endfor %}
-  {% include "room_message.html" %}
-  <form id="text-entry" action="/room/{{ room.key }}/msg" method="post">  
-    <div class="span-20 last">
-      <div class="span-16 push-4 last">
-        <input id="text-entry-content" type="text" name="content" style="width: 560px;" autocomplete="off"/>
-        <input id="send-message" type="submit" value="Send"/>
-      </div>
-    </div>
-  </form>
-</div>
-
-<div id="sidebar" class="span-4 last">
+<div id="sidebar">
     <h3>Users</h3>
     <table id="userlist">
       {% for roomlisting in roomlist %}
@@ -34,13 +15,33 @@
         {{ roomlisting.account.nickname }}</td>
       </tr>
       {% endfor %}
-    </table></div>
+    </table>
 
     <form action="/room/{{ room.key }}/leave" method="post">
       <p>
         <input type="submit" value="Leave Room"/>
       </p>
     </form>
+</div>
+
+    <h3 class="edit" id="room-topic">{{ room.topic }}</h3>
+
+<h3>Chat Log</h3>
+
+<table id="chatlog">
+  {% for message in messages %}
+    {% include "room_message.html" %}
+  {% endfor %}
+  {% include "room_message.html" %}
+</table>
+<div class="text-entry-spacer"></div>
+
+<form id="text-entry" action="/room/{{ room.key }}/msg" method="post">  
+  <div>
+    <input id="text-entry-content" type="text" name="content" autocomplete="off"/>
+    <input id="send-message" type="submit" value="Send"/>
+  </div>
+</form>
 
 {% endblock %}
 
@@ -89,7 +90,7 @@ $(function() {
 
     function scrollToBottom() {
         // trim message list
-        $messages = $chatlog.children('.message:visible');
+        $messages = $chatlog.find('.message:visible');
         if ($messages.length > message_display_max) {
             $messages.slice(0, $messages.length - message_display_max).remove();
         }
@@ -105,7 +106,7 @@ $(function() {
         $msg_new.css('display', '');
         $msg_new.attr("id","message-temp-local");
         $msg_new.find('.msg-timestamp').html(chat.formatTime(myDate));
-        $msg_new.find('.msg-sender').html('&lt;' + '{{ account.nickname }}' + '&gt;');
+        $msg_new.find('.msg-sender').html('{{ account.nickname }}');
         $msg_new.find('.msg-content').html(msg);
         $msg_template.before($msg_new);
         scrollToBottom();
@@ -158,8 +159,9 @@ $(function() {
                     else {
                         var $msg_new = $msg_template.clone();
                         $msg_new.css('display', '');
+                        $msg_new.addClass('event-' + message.event);
                         $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
-                        $msg_new.find('.msg-sender').html('&lt;' + message.sender_name + '&gt;');
+                        $msg_new.find('.msg-sender').html(message.sender_name);
                         $msg_new.find('.msg-content').html(message.content);
                         $msg_template.before($msg_new);
                     }

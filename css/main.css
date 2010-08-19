@@ -1,9 +1,54 @@
 #chatlog {
-    background: #f0f0f0;
+    width: 90%;
+    margin: 0;
     font-size: 120%;
+    border-collapse: collapse;
+}
+
+.msg-timestamp {
+    font-size: 80%;
+    color: #808080;
+    background: #f0f0f0;
+}
+
+.msg-sender {
+    text-align: right;
+    font-weight: bold;
+    background: #f0f0f0;
+    white-space: nowrap;
+}
+
+.msg-content {
+    background: #ffffff;
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    border-right: 0;
+}
+
+.msg-content img.embedded-image {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.event-topic .msg-timestamp, .event-join .msg-timestamp, .event-part .msg-timestamp, .event-topic .msg-sender, .event-join .msg-sender, .event-part .msg-sender {
+    background: #ffe0e0;
+}
+
+.event-topic .msg-content, .event-join .msg-content, .event-part .msg-content {
+    font-style: italic;
+    background: #ffe0e0;
+    border: 0;
+}
+
+.event-topic .msg-content:before {
+    content: 'changed the topic to: ';
 }
 
 #sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 10%;
     background: #e0e8ff;
 }
 
@@ -15,7 +60,26 @@
     vertical-align: middle;
 }
 
-#chatlog img.embedded-image {
-    max-width: 400px;
-    max-height: 400px;
+#text-entry {
+    display: table;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: #ffffff;
+    height: 5em;
+    width: 100%;
+    padding: 0 1.5em;
+}
+
+#text-entry > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#text-entry-content {
+    width: 600px;
+}
+
+.text-entry-spacer {
+    height: 5em;
 }
