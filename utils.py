@@ -1,12 +1,13 @@
 import urllib
 import hashlib
+import re
 from datetime import datetime
 from google.appengine.api import users
 
 from models import *
 
 
-__all__ = ['leave_room', 'gravatar', 'get_account']
+__all__ = ['leave_room', 'gravatar', 'get_account', 'transform_message']
 
 
 def leave_room(room=None, account=None, session=None):
@@ -57,3 +58,10 @@ def get_account():
     user = users.get_current_user()
     account = Account.all().filter('user =', user).get()
     return account
+    
+def transform_message(message):
+    content = message.content
+    r="((?:https?)://[^ \t\n\r()\"']+)"
+    content=re.sub(r,r'<a href="\1">\1</a>',content)
+    message.content = content
+    return message

@@ -65,6 +65,7 @@ class RoomHandler(webapp.RequestHandler):
             message.put()
             
         roomlist = RoomList.all().filter('room = ', room)
+        messages = [transform_message(m) for m in messages]
         context = {
             'room': room,
             'account': account,

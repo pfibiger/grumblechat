@@ -43,6 +43,7 @@ class APIMessageHandler(webapp.RequestHandler):
             self.error(404)
             self.response.out.write("no such message")
             return
+        message = transform_message(message)
         url = "/api/"
         sender_url = url + "account/" + str(message.sender.key())
         room_url = url + "room/" + str(message.room.key())
@@ -118,6 +119,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             if messages:
                 payload['messages'] = []
                 for message in messages:
+                    message = transform_message(message)
                     sender_url = url_base + "account/" + str(message.sender.key())
                     room_url = url_base + "room/" + str(message.room.key())
                     message_data = {
