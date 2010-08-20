@@ -120,6 +120,7 @@ $(function() {
                     switch(message.event) {               
                         case 'topic':
                             $('#room-topic').text(message.content);
+                            document.title = '{{ room.name }} - ' + message.content;
                             break;
                         case 'part':
                             var $removeuser = 'user-' + message.sender_name;
