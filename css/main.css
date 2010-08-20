@@ -1,5 +1,5 @@
 #chatlog {
-    width: 89%;
+    width: 81%;
     margin: 0;
     font-size: 120%;
     border-collapse: collapse;
@@ -57,9 +57,9 @@
     position: fixed;
     top: 0;
     right: 0;
-    width: 10%;
+    width: 18%;
     padding: .5%;
-    background: #e0e8ff;
+    background: #f0f0f0;
 }
 
 #userlist {
