@@ -34,8 +34,7 @@ def leave_room(room=None, account=None, session=None):
 
     # send a message to the room about the part
     timestamp = datetime.now()
-    content = "leaving"
-    message = Message(sender=account, room=room, timestamp=timestamp, content=content,
+    message = Message(sender=account, room=room, timestamp=timestamp,
                       event=Message_event_codes['part'])
     message.put()
 
@@ -61,17 +60,20 @@ def get_account():
     
 def transform_message(message):
     content = message.content
-    r="((?:https?)://[^ \t\n\r()\"']+)"
-    m = re.search(r, content)
-    if (m):
-        url = m.group(1)
-        #content=re.sub(r,r'<img src="\1">',content)
-        #content=re.sub(r,r'<a href="\1">\1</a>',content)
-        r="(?i)\.(jpg|png|gif)$"
-        m = re.search(r,url)
+    if content is not None:
+        r="((?:https?)://[^ \t\n\r()\"']+)"
+        m = re.search(r, content)
         if (m):
-            content = '<img class="embedded-image" src="' + url + '">'
-        else:
-            content = '<a href="' + url + '">' + url + '</a>'
-    message.content = content
+            url = m.group(1)
+            #content=re.sub(r,r'<img src="\1">',content)
+            #content=re.sub(r,r'<a href="\1">\1</a>',content)
+            r="(?i)\.(jpg|png|gif)$"
+            m = re.search(r,url)
+            if (m):
+                content = '<img class="embedded-image" src="' + url + '">'
+            else:
+                content = '<a href="' + url + '">' + url + '</a>'
+        message.content = content
+    else:
+        message.content = ''
     return message

@@ -1,5 +1,5 @@
 #chatlog {
-    width: 90%;
+    width: 89%;
     margin: 0;
     font-size: 120%;
     border-collapse: collapse;
@@ -32,6 +32,7 @@
 
 .event-topic .msg-timestamp, .event-join .msg-timestamp, .event-part .msg-timestamp, .event-topic .msg-sender, .event-join .msg-sender, .event-part .msg-sender {
     background: #ffe0e0;
+    font-weight: normal;
 }
 
 .event-topic .msg-content, .event-join .msg-content, .event-part .msg-content {
@@ -44,11 +45,20 @@
     content: 'changed the topic to: ';
 }
 
+.event-join .msg-content:before {
+    content: 'entered the room';
+}
+
+.event-part .msg-content:before {
+    content: 'left the room';
+}
+
 #sidebar {
     position: fixed;
     top: 0;
     right: 0;
     width: 10%;
+    padding: .5%;
     background: #e0e8ff;
 }
 
@@ -82,4 +92,8 @@
 
 .text-entry-spacer {
     height: 5em;
+}
+
+#room-topic > form {
+    display: inline;
 }

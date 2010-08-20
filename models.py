@@ -43,5 +43,5 @@ class Message(db.Model):
     room = db.ReferenceProperty(reference_class=Room, required=True)
     timestamp = db.DateTimeProperty(auto_now_add=True, required=True)
     event = db.IntegerProperty(required=True, choices=Message_event_codes.values())
-    content = db.StringProperty(required=True)
+    content = db.StringProperty()
     extra = db.StringProperty()

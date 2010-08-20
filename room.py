@@ -59,8 +59,7 @@ class RoomHandler(webapp.RequestHandler):
             sender = Account.all().filter('user =', user).get()
             timestamp = datetime.now()
             extra = sender.gravatar_tag
-            content = 'joining'
-            message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
+            message = Message(sender=sender, room=room, timestamp=timestamp,
                               event=Message_event_codes['join'], extra=extra)
             message.put()
             

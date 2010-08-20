@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 
 
-{% block heading %}Room: {{ room.name }}{% endblock %}
+{% block title %}{{ room.name }} - {{ room.topic }}{% endblock %}
+
+{% block heading %}{% endblock %}
 
 
 {% block content %}
 
 <div id="sidebar">
-    <h3>Users</h3>
+    <h3>Topic: <span class="edit" id="room-topic">{{ room.topic }}</span></h3>
+
+    <h3>Users:</h3>
     <table id="userlist">
       {% for roomlisting in roomlist %}
       <tr id="user-{{ roomlisting.account.nickname }}">
@@ -23,10 +27,6 @@
       </p>
     </form>
 </div>
-
-    <h3 class="edit" id="room-topic">{{ room.topic }}</h3>
-
-<h3>Chat Log</h3>
 
 <table id="chatlog">
   {% for message in messages %}
@@ -58,24 +58,13 @@ $(function() {
     var $msg_template = $chatlog.find('.message').last();
     var $text_entry_content = $('#text-entry-content');
 
-    $('.edit').editable(function(topic) { 
-        var post_url = '/api/room/{{ room.key }}/topic';
-        $.ajax({
-            url: post_url,
-            type: "POST",
-            data: { topic: topic },
-            error: function() {
-                alert("unknown error, try again");
-            }
-        });
-        return topic;
-     }, { 
-        indicator : 'Saving...',
-        tooltip   : 'Click to edit...',
-        id   : 'room-topic',
-        name : 'topic'
+    $('.edit').editable('/api/room/{{ room.key }}/topic', {
+        indicator   : 'Saving...',
+        tooltip     : 'Click to edit',
+        name        : 'topic',
+        ajaxoptions : { dataType: 'json' },
+        callback    : function(value, settings) { $(this).html(value.message) },
     });
-
 
     
     $('#text-entry').submit(function() {

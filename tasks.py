@@ -17,7 +17,19 @@ class SessionTaskHandler(webapp.RequestHandler):
             leave_room(session=session)
 
 
+class FixupMessagesTaskHandler(webapp.RequestHandler):
+
+    def get(self):
+        for event in ('join', 'part'):
+            messages = Message.all().filter("event =", Message_event_codes[event])
+            for m in messages:
+                if m.content is not None:
+                    m.content = None
+                    m.put()
+
+
 application = webapp.WSGIApplication([(r'/tasks/session', SessionTaskHandler),
+                                      (r'/tasks/fixup_messages',FixupMessagesTaskHandler),
                                       ],
                                      debug=True)
 

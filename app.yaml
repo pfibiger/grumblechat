@@ -35,7 +35,7 @@ handlers:
 - url: /api/room/[^/]+/msg/
   script: message.py
 
-- url: /tasks/session
+- url: /tasks/.*
   script: tasks.py
   login: admin
 
