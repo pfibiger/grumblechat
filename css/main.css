@@ -62,6 +62,18 @@
     background: #f0f0f0;
 }
 
+#room-name {
+    text-decoration: underline;
+}
+
+#room-topic {
+    line-height: 1.2;
+}
+
+h3#room-users {
+    margin-bottom: .5em;
+}
+
 #userlist {
     font-size: 120%;
 }
@@ -94,6 +106,7 @@
     height: 5em;
 }
 
-#room-topic > form {
-    display: inline;
+.edit {
+    background: url(/images/page_white_edit.png) no-repeat;
+    padding-left: 20px;
 }

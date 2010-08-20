@@ -47,5 +47,9 @@ handlers:
   static_dir: js
   expiration: 1d
 
+- url: /images
+  static_dir: images
+  expiration: 1d
+
 - url: .*
   script: main.py

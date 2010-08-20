@@ -9,9 +9,10 @@
 {% block content %}
 
 <div id="sidebar">
-    <h3>Topic: <span class="edit" id="room-topic">{{ room.topic }}</span></h3>
-
-    <h3>Users:</h3>
+    <h2 id="room-name">{{ room.name }}</h2>
+    <h3 id="room-topic" class="edit">{{ room.topic }}</h3>
+    <hr/>
+    <h3 id="room-users">Users:</h3>
     <table id="userlist">
       {% for roomlisting in roomlist %}
       <tr id="user-{{ roomlisting.account.nickname }}">
@@ -58,7 +59,7 @@ $(function() {
     var $msg_template = $chatlog.find('.message').last();
     var $text_entry_content = $('#text-entry-content');
 
-    $('.edit').editable('/api/room/{{ room.key }}/topic', {
+    $('#room-topic').editable('/api/room/{{ room.key }}/topic', {
         indicator   : 'Saving...',
         tooltip     : 'Click to edit',
         name        : 'topic',
