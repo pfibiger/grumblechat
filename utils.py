@@ -72,6 +72,6 @@ def transform_message(message):
         if (m):
             content = '<img class="embedded-image" src="' + url + '">'
         else:
-            content = '<a href="' + url + '">' + url + '</a>'
+            content = '<a href="' + url + '" target=”_blank”>' + url + '</a>'
     message.content = content
     return message
