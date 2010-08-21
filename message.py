@@ -49,7 +49,7 @@ class APIMessageHandler(webapp.RequestHandler):
         room_url = url + "room/" + str(message.room.key())
         payload = {'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
                    'sender' : sender_url, 'room' : room_url, 'event' : Message_event_names[message.event],
-                   'extra' : extra}
+                   'extra' : extra, 'id' : message.key().id()}
         json = simplejson.dumps(payload)
         self.response.out.write(json)
 
@@ -70,7 +70,8 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             message = Message(sender=sender, room=room, timestamp=timestamp, content=content,
                               event=Message_event_codes['message'])
             message.put()
-            payload = {'response_status' : "OK", 'message' : content, 'timestamp' : timestamp.isoformat()}
+            payload = {'response_status' : "OK", 'message' : content, 'id' : message.key().id(),
+                       'timestamp' : message.timestamp.isoformat()}
         else:
             payload = {'response_status' : "Unknown Error"}
         json = simplejson.dumps(payload)
@@ -130,6 +131,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                         'room' : room_url,
                         'event' : Message_event_names[message.event],
                         'extra' : message.extra,
+                        'id' : message.key().id(),
                         }
                     payload['messages'].append(message_data)
                 if next_url:

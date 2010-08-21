@@ -53,6 +53,7 @@ $(function() {
     var update_interval_max = 1000 * 60;
     var update_interval = update_interval_min;
     var message_display_max = 40;
+    var do_polling = true;
 
     var $chatlog = $('#chatlog');
     var $msg_template = $chatlog.find('.message').last();
@@ -100,14 +101,21 @@ $(function() {
         $msg_template.before($msg_new);
         scrollToBottom();
         var post_url = '/api/room/{{ room.key }}/msg/';
+        do_polling = false;
         $.ajax({
             url: post_url,
             type: "POST",
             data: { message: msg },
-            success: function(){
+            success: function(data){
+                do_polling = true;
+                message = JSON.parse(data);
+                var $new_id = "message-" + '{{ account.nickname }}' + "-" + message.id;
+                $msg_new.attr("id",$new_id);
+                console.log($msg_new);
             },
             error: function(){
                 alert('failure');
+                do_polling = true;
             }
         });
         return false;
@@ -137,14 +145,12 @@ $(function() {
                             break;
                     }
                     //always do 'message' type
-                    var $found_message = $('#message-temp-local');
-                    var $found_content = $found_message.find('.msg-content');
-                    //console.log($found_content);
-                    //alert ($found_content.html());
-                    if ($found_content.html() == message.content) {
-                        // just update the id, since we already wrote this one locally.
-                        var $new_id = "message-" + message.sender_name + "-" + message.timestamp;
-                        $found_message.attr("id",$new_id);
+                    var $match_id = "message-" + message.sender_name + "-" + message.id;
+                    var $found_message = $('#' + $match_id);
+                    console.log($found_message);
+                    if ($found_message.length != 0) {
+                        // for now, lets update the content (until we do it in js)
+                        $found_message.find('.msg-content').html(message.content);
                     } 
                     else {
                         var $msg_new = $msg_template.clone();
