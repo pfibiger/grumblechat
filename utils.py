@@ -67,16 +67,18 @@ def transform_message(message):
             url = m.group(1)
             #content=re.sub(r,r'<img src="\1">',content)
             #content=re.sub(r,r'<a href="\1">\1</a>',content)
-            r="(?i)\.(jpg|png|gif)$"
-            m = re.search(r,url)
-            r="(?i)\.(mp3)$"
-            m2 = re.search(r,url)
+            r2="(?i)\.(jpg|png|gif)$"
+            m = re.search(r2,url)
+            r2="(?i)\.(mp3)$"
+            m2 = re.search(r2,url)
+            new_content = ''
             if (m):
-                content = '<img class="embedded-image" src="' + url + '">'
+                new_content = '<img class="embedded-image" src="' + url + '">'
             elif (m2):
-                content = '<p id="audioplayer_' + str(message.key().id()) +'">'+ url +'</p><script type="text/javascript"> AudioPlayer.embed("audioplayer_' + str(message.key().id()) +'", {soundFile: "' + url +'"});</script>'  
+                new_content = '<p id="audioplayer_' + str(message.key().id()) +'">'+ url +'</p><script type="text/javascript"> AudioPlayer.embed("audioplayer_' + str(message.key().id()) +'", {soundFile: "' + url +'"});</script>'  
             else:
-                content = '<a href="' + url + '" target="_blank">' + url + '</a>'
+                new_content = '<a href="' + url + '" target="_blank">' + url + '</a>'
+            content = re.sub(r,new_content,content)
         message.content = content
     else:
         message.content = ''
