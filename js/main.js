@@ -1,4 +1,4 @@
-chat = function() {
+var chat = function() {
 
   // private
 
@@ -35,7 +35,7 @@ chat = function() {
     formatTime: function formatTime(date) {
       var parts = [date.getHours(), date.getMinutes(), date.getSeconds()];
 
-      for (i=0; i<parts.length; i++) {
+      for (var i=0; i<parts.length; i++) {
         parts[i] = parts[i].toString();
         if (parts[i].length == 1)
           parts[i] = '0' + parts[i];

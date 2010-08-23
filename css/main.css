@@ -31,35 +31,35 @@
 }
 
 .event-part .msg-timestamp, .event-part .msg-sender {
-    background: #ffe0e0;
+    background: #FFEBEB;
     font-weight: normal;
 }
 
 .event-part .msg-content {
     font-style: italic;
-    background: #ffe0e0;
+    background: #FFEBEB;
     border: 0;
 }
 
 .event-join .msg-timestamp, .event-join .msg-sender {
-    background: #e7ffe1;
+    background: #EBFFEC;
     font-weight: normal;
 }
 
 .event-join .msg-content {
     font-style: italic;
-    background: #e7ffe1;
+    background: #EBFFEC;
     border: 0;
 }
 
 .event-topic .msg-timestamp, .event-topic .msg-sender {
-    background: #e1e4ff;
+    background: #EBECFF;
     font-weight: normal;
 }
 
 .event-topic .msg-content {
     font-style: italic;
-    background: #e1e4ff;
+    background: #EBECFF;
     border: 0;
 }
 

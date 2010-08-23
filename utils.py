@@ -73,7 +73,7 @@ def transform_message(message):
             m2 = re.search(r2,url)
             new_content = ''
             if (m):
-                new_content = <a href="' + url + '" target="_blank">' + '<img class="embedded-image" src="' + url + '">' + '</a>'
+                new_content = '<a href="' + url + '" target="_blank">' + '<img class="embedded-image" src="' + url + '">' + '</a>'
             elif (m2):
                 new_content = '<p id="audioplayer_' + str(message.key().id()) +'">'+ url +'</p><script type="text/javascript"> AudioPlayer.embed("audioplayer_' + str(message.key().id()) +'", {soundFile: "' + url +'"});</script>'  
             else:

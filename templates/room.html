@@ -81,7 +81,7 @@ $(function() {
 
     function scrollToBottom() {
         // trim message list
-        $messages = $chatlog.find('.message:visible');
+        var $messages = $chatlog.find('.message:visible');
         if ($messages.length > message_display_max) {
             $messages.slice(0, $messages.length - message_display_max).remove();
         }
@@ -112,7 +112,6 @@ $(function() {
                 message = JSON.parse(data);
                 var $new_id = "message-" + '{{ account.nickname }}' + "-" + message.id;
                 $msg_new.attr("id",$new_id);
-                console.log($msg_new);
             },
             error: function(){
                 alert('failure');
