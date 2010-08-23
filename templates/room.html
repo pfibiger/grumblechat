@@ -147,7 +147,6 @@ $(function() {
                     //always do 'message' type
                     var $match_id = "message-" + message.sender_name + "-" + message.id;
                     var $found_message = $('#' + $match_id);
-                    console.log($found_message);
                     if ($found_message.length != 0) {
                         // for now, lets update the content (until we do it in js)
                         $found_message.find('.msg-content').html(message.content);
