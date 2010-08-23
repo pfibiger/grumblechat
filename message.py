@@ -112,9 +112,9 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 # TODO filter by query terms
                 pass
             else:
-                # return (up to) last 40 messages
-                # FIXME should define '40' as a constant
-                messages = reversed(Message.all().filter('room =', room).order('-timestamp').fetch(40))
+                # return (up to) last 70 messages
+                # FIXME should define '70' as a constant
+                messages = reversed(Message.all().filter('room =', room).order('-timestamp').fetch(70))
             url_base = "/api/"
             payload = {}
             if messages:

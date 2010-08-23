@@ -40,12 +40,12 @@ class RoomHandler(webapp.RequestHandler):
             self.error(404)
             self.response.out.write("no such room")
             return
-        # return (up to) last 40 messages
-        # FIXME should define '40' as a constant
+        # return (up to) last 70 messages
+        # FIXME should define '70' as a constant
         # need to enumerate query results to access last message below
         # add a second .filter below to hide topic/join/part from template on render
         # filter('event =', 'message') this appears to break the user list though :(
-        messages = [m for m in reversed(Message.all().filter('room =', room).order('-timestamp').fetch(40))]
+        messages = [m for m in reversed(Message.all().filter('room =', room).order('-timestamp').fetch(70))]
         account = get_account()
         roomlist_query = RoomList.all()
         roomlist_query.filter('room = ', room)
