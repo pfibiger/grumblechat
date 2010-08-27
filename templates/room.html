@@ -109,7 +109,7 @@ $(function() {
             data: { message: msg },
             success: function(data){
                 do_polling = true;
-                message = JSON.parse(data);
+                message = $.parseJSON(data);
                 var $new_id = "message-" + '{{ account.nickname }}' + "-" + message.id;
                 $msg_new.attr("id",$new_id);
             },
