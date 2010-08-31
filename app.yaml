@@ -50,6 +50,11 @@ handlers:
 - url: /images
   static_dir: images
   expiration: 1d
+  
+- url: /favicon.ico
+  static_files: images/favicon.ico
+  upload: images/favicon.ico
+
 
 - url: .*
   script: main.py
