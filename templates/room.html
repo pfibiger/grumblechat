@@ -52,6 +52,7 @@ $(function() {
     var url_message_next = '/api/room/{{ room.key }}/msg/?since={{ message_last_key }}';
     var update_interval_min = 1000;
     var update_interval_max = 1000 * 60;
+    var update_interval_error = 1000 * 10;
     var update_interval = update_interval_min;
     var message_display_max = 70;
     var do_polling = true;
@@ -122,53 +123,63 @@ $(function() {
     }
     
     function updateChat() {
-        $.getJSON(url_message_next, function(data) {
-            if (data.messages) {
-                $.each(data.messages, function(index, message) {
-                    switch(message.event) {               
-                        case 'topic':
-                            $('#room-topic').text(message.content);
-                            document.title = '{{ room.name }} - ' + message.content;
-                            break;
-                        case 'part':
-                            var $removeuser = 'user-' + message.sender_name;
-                            $("#" + $removeuser).remove();
-                            break;
-                        case 'join':
-                            var $adduser = 'user-' + message.sender_name;
-                            if ($("#" + $adduser).length == 0){
-                                $tablerow_toinsert = '<tr id="user-' + message.sender_name + '"><td>' +  message.extra + ' ' + message.sender_name + '</td></tr>';
-                                $('#userlist tr:last').after($tablerow_toinsert);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    //always do 'message' type
-                    var $match_id = "message-" + message.sender_name + "-" + message.id;
-                    var $found_message = $('#' + $match_id);
-                    if ($found_message.length != 0) {
-                        // for now, lets update the content (until we do it in js)
-                        $found_message.find('.msg-content').html(message.content);
-                    } 
-                    else {
-                        var $msg_new = $msg_template.clone();
-                        $msg_new.css('display', '');
-                        $msg_new.addClass('event-' + message.event);
-                        $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
-                        $msg_new.find('.msg-sender').html(message.sender_name);
-                        $msg_new.find('.msg-content').html(message.content);
-                        $msg_template.before($msg_new);
-                    }
-                });
-                scrollToBottom();
-                url_message_next = data.next;
-                update_interval = update_interval_min;
-            } else {
-                //temporarily change the backoff from exponential to linear. + 2000 instead of * x
-                update_interval = Math.min(update_interval + 2000, update_interval_max);
-            }
-            setTimeout(updateChat, update_interval);
+        $.ajax({
+            url: url_message_next,
+            dataType: 'json',
+            success: function(data) {
+                if (data.messages) {
+                    $.each(data.messages, function(index, message) {
+                        switch(message.event) {               
+                            case 'topic':
+                                $('#room-topic').text(message.content);
+                                document.title = '{{ room.name }} - ' + message.content;
+                                break;
+                            case 'part':
+                                var $removeuser = 'user-' + message.sender_name;
+                                $("#" + $removeuser).remove();
+                                break;
+                            case 'join':
+                                var $adduser = 'user-' + message.sender_name;
+                                if ($("#" + $adduser).length == 0){
+                                    $tablerow_toinsert = '<tr id="user-' + message.sender_name + '"><td>' +  message.extra + ' ' + message.sender_name + '</td></tr>';
+                                    $('#userlist tr:last').after($tablerow_toinsert);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        //always do 'message' type
+                        var $match_id = "message-" + message.sender_name + "-" + message.id;
+                        var $found_message = $('#' + $match_id);
+                        if ($found_message.length != 0) {
+                            // for now, lets update the content (until we do it in js)
+                            $found_message.find('.msg-content').html(message.content);
+                        } 
+                        else {
+                            var $msg_new = $msg_template.clone();
+                            $msg_new.css('display', '');
+                            $msg_new.addClass('event-' + message.event);
+                            $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
+                            $msg_new.find('.msg-sender').html(message.sender_name);
+                            $msg_new.find('.msg-content').html(message.content);
+                            $msg_template.before($msg_new);
+                        }
+                    });
+                    scrollToBottom();
+                    url_message_next = data.next;
+                    update_interval = update_interval_min;
+                } else {
+                    //temporarily change the backoff from exponential to linear. + 2000 instead of * x
+                    update_interval = Math.min(update_interval + 2000, update_interval_max);
+                }
+                setTimeout(updateChat, update_interval);
+            },
+            error: function(request, status, error) {
+                // give the server/network/etc some time to settle before retrying
+                update_interval = update_interval_error;
+                setTimeout(updateChat, update_interval);
+                // TODO inform the user about the problem
+            },
         });
     }
     setTimeout(updateChat, update_interval);
