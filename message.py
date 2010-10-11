@@ -114,7 +114,12 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             else:
                 # return (up to) last 70 messages
                 # FIXME should define '70' as a constant
-                messages = reversed(Message.all().filter('room =', room).order('-timestamp').fetch(70))
+                # need to enumerate query results to access last message
+                messages = [m for m in reversed(Message.all().filter('room =', room).order('-timestamp').fetch(70))]
+                if messages:
+                    next_url = 'room/%s/msg/?since=%s' % (room.key(), messages[-1].key())
+                else:
+                    next_url = 'room/%s/msg/' % (room.key())
             url_base = "/api/"
             payload = {}
             if messages:
