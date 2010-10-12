@@ -55,7 +55,7 @@ var chat = function() {
 
         $msg_new.css('display', '');
         $msg_new.attr("id","message-temp-local");
-        $msg_new.find('.msg-timestamp').html(chat.formatTime(myDate));
+        $msg_new.find('.msg-timestamp').html(formatTime(myDate));
         $msg_new.find('.msg-sender').html(account.nickname);
         $msg_new.find('.msg-content').html(msg);
         $msg_template.before($msg_new);
@@ -107,7 +107,7 @@ var chat = function() {
                         var $msg_new = $msg_template.clone();
                         $msg_new.css('display', '');
                         $msg_new.addClass('event-' + message.event);
-                        $msg_new.find('.msg-timestamp').html(chat.formatTime(chat.parseDate(message.timestamp)));
+                        $msg_new.find('.msg-timestamp').html(formatTime(parseDate(message.timestamp)));
                         $msg_new.find('.msg-sender').html(message.sender_name);
                         $msg_new.find('.msg-content').html(message.content);
                         $msg_template.before($msg_new);
@@ -138,74 +138,74 @@ var chat = function() {
         });
     }
 
+    function parseDate(str) {
+        /* From http://anentropic.wordpress.com/2009/06/25/javascript-iso8601-parser-and-pretty-dates/
+        Parses an ISO8601-formated date in UTC, i.e. yyyy-mm-ddThh:mm:ss.ssssss . */
+            
+        var parts = str.split('T'),
+        dateParts = parts[0].split('-'),
+        timeParts = parts[1].split(':'),
+        timeSecParts = timeParts[2].split('.'),
+        timeHours = Number(timeParts[0]),
+        date = new Date;
+
+        date.setUTCFullYear(Number(dateParts[0]));
+        date.setUTCMonth(Number(dateParts[1])-1);
+        date.setUTCDate(Number(dateParts[2]));
+        date.setUTCHours(Number(timeHours));
+        date.setUTCMinutes(Number(timeParts[1]));
+        date.setUTCSeconds(Number(timeSecParts[0]));
+        if (timeSecParts[1]) {
+            date.setUTCMilliseconds(Math.round(Number(timeSecParts[1])/1000));
+        }
+
+        // by using setUTC methods the date has already been converted to local time
+        return date;
+    }
+
+    function formatTime(date) {
+        var parts = [date.getHours(), date.getMinutes(), date.getSeconds()];
+
+        for (var i=0; i<parts.length; i++) {
+            parts[i] = parts[i].toString();
+            if (parts[i].length == 1)
+                parts[i] = '0' + parts[i];
+        }
+
+        return parts.join(':');
+    }
+
+    function initialize(the_room, the_account, message_last_key) {
+        // initialize "statics"
+        room = the_room;
+        account = the_account;
+        url_message_next = '/api/room/' + room.key + '/msg/?since=' + message_last_key;
+        $chatlog = $('#chatlog');
+        $msg_template = $chatlog.find('.message').last();
+        $text_entry_content = $('#text-entry-content');
+
+        // apply jquery hooks and behaviors
+        $('#room-topic').editable('/api/room/' + room.key + '/topic', {
+            indicator   : 'Saving...',
+            tooltip     : 'Click to edit',
+            name        : 'topic',
+            ajaxoptions : { dataType: 'json' },
+            callback    : function (value, settings) { $(this).html(value.message) },
+        });
+        $('#text-entry').submit(textEntrySubmit);
+
+        // prepare the window for user interaction
+        scrollToBottom();
+        $('#text-entry-content').focus();
+
+        // start the update loop rolling
+        setTimeout(updateChat);    
+    }
+
 
     // public
     return {
-
-        initChat: function initChat(the_room, the_account, message_last_key) {
-            // initialize "statics"
-            room = the_room;
-            account = the_account;
-            url_message_next = '/api/room/' + room.key + '/msg/?since=' + message_last_key;
-            $chatlog = $('#chatlog');
-            $msg_template = $chatlog.find('.message').last();
-            $text_entry_content = $('#text-entry-content');
-
-            // apply jquery hooks and behaviors
-            $('#room-topic').editable('/api/room/' + room.key + '/topic', {
-                indicator   : 'Saving...',
-                tooltip     : 'Click to edit',
-                name        : 'topic',
-                ajaxoptions : { dataType: 'json' },
-                callback    : function (value, settings) { $(this).html(value.message) },
-            });
-            $('#text-entry').submit(textEntrySubmit);
-
-            // prepare the window for user interaction
-            scrollToBottom();
-            $('#text-entry-content').focus();
-
-            // start the update loop rolling
-            setTimeout(updateChat);    
-        },
-
-        parseDate: function parseDate(str) {
-            /* From http://anentropic.wordpress.com/2009/06/25/javascript-iso8601-parser-and-pretty-dates/
-            Parses an ISO8601-formated date in UTC, i.e. yyyy-mm-ddThh:mm:ss.ssssss . */
-            
-            var parts = str.split('T'),
-            dateParts = parts[0].split('-'),
-            timeParts = parts[1].split(':'),
-            timeSecParts = timeParts[2].split('.'),
-            timeHours = Number(timeParts[0]),
-            date = new Date;
-
-            date.setUTCFullYear(Number(dateParts[0]));
-            date.setUTCMonth(Number(dateParts[1])-1);
-            date.setUTCDate(Number(dateParts[2]));
-            date.setUTCHours(Number(timeHours));
-            date.setUTCMinutes(Number(timeParts[1]));
-            date.setUTCSeconds(Number(timeSecParts[0]));
-            if (timeSecParts[1]) {
-                date.setUTCMilliseconds(Math.round(Number(timeSecParts[1])/1000));
-            }
-
-            // by using setUTC methods the date has already been converted to local time
-            return date;
-        },
-
-        formatTime: function formatTime(date) {
-            var parts = [date.getHours(), date.getMinutes(), date.getSeconds()];
-
-            for (var i=0; i<parts.length; i++) {
-                parts[i] = parts[i].toString();
-                if (parts[i].length == 1)
-                    parts[i] = '0' + parts[i];
-            }
-
-            return parts.join(':');
-        },
-
+        initialize: initialize,
     };
 
 }();

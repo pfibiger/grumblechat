@@ -48,9 +48,7 @@
 
 
 {% block script %}
-chat.initChat(
-    { 'key': '{{ room.key }}', 'name': '{{ room.name }}' },
-    { 'nickname': '{{ account.nickname }}' },
-    '{{ message_last_key }}'
-);
+the_room = { key: '{{ room.key }}', name: '{{ room.name }}' };
+the_account = { nickname: '{{ account.nickname }}' };
+chat.initialize(the_room, the_account, '{{ message_last_key }}');
 {% endblock %}
