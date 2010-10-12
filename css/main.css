@@ -25,6 +25,10 @@
     border-right: 0;
 }
 
+.msg-timestamp abbr {
+    border-bottom: 0;
+}
+
 .msg-content img.embedded-image {
     max-width: 400px;
     max-height: 400px;

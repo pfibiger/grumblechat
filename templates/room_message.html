@@ -1,6 +1,14 @@
 {% assign event message.event %}
 <tr id="{% if message %}message-{{ message.sender.nickname }}-{{ message.key.id }}{% endif %}" class="message{% if message %} event-{{ message_event_names|get:event }}{% endif %}" {% if not message %} style="display: none;" {% endif %}>
-  <td class="msg-timestamp">{% if message %}{{ message.timestamp|time:"H:i:s" }}{% endif %}</td>
-  <td class="msg-sender">{% if message %}{{ message.sender.nickname }}{% endif %}</td>
-  <td class="msg-content">{% if message %}{{ message.content }}{% endif %}</td>
+  <td class="msg-timestamp">
+    <abbr title="{% if message %}{{ message.timestamp|date:"Y-m-d\TH:i:s" }}{% endif %}">
+      {% if message %}{{ message.timestamp|date:"H:i" }}{% endif %}
+    </abbr>
+  </td>
+  <td class="msg-sender">
+    {% if message %}{{ message.sender.nickname }}{% endif %}
+  </td>
+  <td class="msg-content">
+    {% if message %}{{ message.content }}{% endif %}
+  </td>
 </tr>
