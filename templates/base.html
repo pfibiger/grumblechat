@@ -19,10 +19,6 @@
           width: 290  
       });  
   </script>
-  
-  <script type="text/javascript">
-    {% block script %}{% endblock %}
-  </script>
   {% block head_extra %}{% endblock %}
   <title>{% block title %}Main Page{% endblock %}</title>
 </head>
@@ -35,6 +31,10 @@
       {% block content %}{% endblock %}
     </div>
   </div>
+
+  <script type="text/javascript">
+    {% block script %}{% endblock %}
+  </script>
 </body>
 
 </html>
