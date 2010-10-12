@@ -33,7 +33,9 @@
   </div>
 
   <script type="text/javascript">
-    {% block script %}{% endblock %}
+    $(document).ready(function () {
+      {% block script %}{% endblock %}
+    });
   </script>
 </body>
 
