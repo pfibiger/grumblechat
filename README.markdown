@@ -1,0 +1,13 @@
+# grmblechat 
+
+*A free Google Appengine based chat system*
+
+Created as a free alternative to irc, talkerapp, basecamp, etc and as an opportunity to play around with Appengine. There's still a lot of work left to do, see Issues for a list of outstanding features or bugs.
+
+## Getting Started with grumblechat 
+
+All you need is a working Appengine install, instructions can be found here:
+http://code.google.com/appengine/docs/python/overview.html
+
+Check out grumblechat, import it as an existing project and then deploy. All deployment-related secrets are handled by the Appengine console.
+
