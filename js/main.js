@@ -1,59 +1,3 @@
-// takes a text field and an array of strings for autocompletion
-function autocompleteUsername( input, data )
-{
-	if ( input.value.length == input.selectionStart && input.value.length == input.selectionEnd )
-	{
-		var candidates = []
-		
-		if ( input.value.length > 0 )
-		{
-			// filter data to find only strings that start with existing value
-			for ( var i = 0; i < data.length; i++ )
-			{
-				if ( data[ i ].toLowerCase().indexOf( input.value.toLowerCase() ) == 0 && data[ i ].length > input.value.length )
-					candidates.push( data[ i ] )
-			}
-		}
-		
-		if ( candidates.length > 0 )
-		{
-			// some candidates for autocompletion are found
-			if ( candidates.length == 1 )
-			{
-				input.value = candidates[ 0 ] + ': '
-			}
-			else
-			{
-				input.value = longestInCommon( candidates, input.value.length ) + ': '
-			}
-			
-			return true
-		}
-	}
-
-	return false
-}
-
-// finds the longest common substring in the given data set.
-// takes an array of strings and a starting index
-function longestInCommon( candidates, index )
-{
-	var i, ch, memo
-	do
-	{
-		memo = null
-		for ( i=0; i < candidates.length; i++ )
-		{
-			ch = candidates[i].charAt(index)
-			if (!ch) break
-			if (!memo) memo = ch
-			else if (ch != memo) break
-		}
-	} while ( i == candidates.length && ++index )
-
-	return candidates[ 0 ].slice( 0, index )
-}
-
 var chat = function() {
 
     // private
@@ -234,6 +178,24 @@ var chat = function() {
         return date;
     }
 
+    // finds the longest common substring in the given data set.
+    // takes an array of strings and a starting index
+    function longestInCommon( candidates, index ) {
+        var i, ch, memo;
+
+        do {
+            memo = null;
+            for ( i=0; i < candidates.length; i++ ) {
+	        ch = candidates[i].charAt(index);
+	        if (!ch) break;
+	        if (!memo) memo = ch;
+	        else if (ch != memo) break;
+            }
+        } while ( i == candidates.length && ++index );
+
+        return candidates[ 0 ].slice( 0, index );
+    }
+
     function initialize(the_room, the_account, message_last_key) {
         // initialize "statics"
         room = the_room;
@@ -262,10 +224,40 @@ var chat = function() {
         setTimeout(updateChat);    
     }
 
+    // takes a text field and an array of strings for autocompletion
+    function autocompleteUsername( input, data ) {
+        if ( input.value.length == input.selectionStart && input.value.length == input.selectionEnd ) {
+            var candidates = [];
+
+            if ( input.value.length > 0 ) {
+	        // filter data to find only strings that start with existing value
+	        for ( var i = 0; i < data.length; i++ ) {
+                    if ( data[ i ].toLowerCase().indexOf( input.value.toLowerCase() ) == 0 && data[ i ].length > input.value.length ) {
+	                candidates.push( data[ i ] );
+                    }
+	        }
+            }
+
+            if ( candidates.length > 0 ) {
+	        // some candidates for autocompletion are found
+	        if ( candidates.length == 1 ) {
+	            input.value = candidates[ 0 ] + ': ';
+	        } else {
+	            input.value = longestInCommon( candidates, input.value.length ) + ': ';
+	        }
+	        return true;
+            }
+
+        }
+
+        return false;
+    }
+
 
     // public
     return {
         initialize: initialize,
+        autocompleteUsername: autocompleteUsername,
     };
 
 }();

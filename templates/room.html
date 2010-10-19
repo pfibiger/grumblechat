@@ -58,7 +58,7 @@
 			{
 				if ( e.target )
 				{
-					autocompleteUsername( e.target, $('#userlist tr').map(function(){return this.id.substr(5)}) )
+					chat.autocompleteUsername( e.target, $('#userlist tr').map(function(){return this.id.substr(5)}) )
 					if( e.preventDefault )
 					{
 						e.preventDefault();
