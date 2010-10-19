@@ -10,7 +10,7 @@ function autocompleteUsername( input, data )
 			// filter data to find only strings that start with existing value
 			for ( var i = 0; i < data.length; i++ )
 			{
-				if ( data[ i ].indexOf( input.value ) == 0 && data[ i ].length > input.value.length )
+				if ( data[ i ].toLowerCase().indexOf( input.value.toLowerCase() ) == 0 && data[ i ].length > input.value.length )
 					candidates.push( data[ i ] )
 			}
 		}
