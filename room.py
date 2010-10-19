@@ -85,17 +85,9 @@ class LeaveHandler(webapp.RequestHandler):
         leave_room(room=room, account=account)
         self.redirect('/room/')
 
-class UserListHandler( webapp.RequestHandler ):
-    
-    def get( self, room_key ):
-        room = Room.all().filter( '__key__ =', Key( room_key ) ).get()
-        roomlist = RoomList.all().filter( 'room = ', room )
-			
-
 application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
                                       (r'/room/([^/]+)', RoomHandler),
-                                      (r'/room/([^/]+)/leave', LeaveHandler),
-                                      (r'/room/([^/]+)/userlist', UserListHandler)],
+                                      (r'/room/([^/]+)/leave', LeaveHandler)],
                                      debug=True)
 
 def main():
