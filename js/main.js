@@ -1,6 +1,8 @@
 var chat = function() {
 
     // private
+    var KEY_TAB = 9;
+
     var update_interval_min = 1000;
     var update_interval_max = 1000 * 60;
     var update_interval_error = 1000 * 10;
@@ -23,6 +25,41 @@ var chat = function() {
             sendMessage(msg);
             $text_entry_content.val('');
             update_interval = update_interval_min; // FIXME need to cancel pending update and retrigger it with this new interval
+        }
+        return false;
+    }
+
+    function textEntryKeydown(event) {
+        if (event.which == KEY_TAB) {
+            var userlist = $('#userlist tr').map(function(){return this.id.substr(5)});
+            autocompleteUsername($(event.target), userlist);
+            return false;
+        }
+    }
+
+    // takes a text field and an array of strings for autocompletion
+    function autocompleteUsername($input, names) {
+        var value = $input.val();
+        var candidates = [];
+        var i;
+
+        // ensure we have text, no text is selected, and cursor is at end of text
+        if (value.length > 0 && $input[0].selectionStart == $input[0].selectionEnd && $input[0].selectionStart == value.length) {
+	    // filter names to find only strings that start with existing value
+	    for (i = 0; i < names.length; i++) {
+                if ( names[i].toLowerCase().indexOf(value.toLowerCase()) == 0 && names[i].length >= value.length ) {
+	            candidates.push(names[i]);
+                }
+	    }
+            if (candidates.length > 0) {
+	        // some candidates for autocompletion are found
+	        if (candidates.length == 1) {
+	            $input.val(candidates[0] + ': ');
+	        } else {
+	            $input.val(longestInCommon( candidates, value.length ));
+	        }
+	        return true;
+            }
         }
         return false;
     }
@@ -180,20 +217,20 @@ var chat = function() {
 
     // finds the longest common substring in the given data set.
     // takes an array of strings and a starting index
-    function longestInCommon( candidates, index ) {
+    function longestInCommon(candidates, index) {
         var i, ch, memo;
 
         do {
             memo = null;
-            for ( i=0; i < candidates.length; i++ ) {
+            for (i = 0; i < candidates.length; i++) {
 	        ch = candidates[i].charAt(index);
-	        if (!ch) break;
-	        if (!memo) memo = ch;
-	        else if (ch != memo) break;
+	        if (!ch) { break };
+	        if (!memo) { memo = ch; }
+	        else if (ch != memo) { break; }
             }
-        } while ( i == candidates.length && ++index );
+        } while (i == candidates.length && ++index);
 
-        return candidates[ 0 ].slice( 0, index );
+        return candidates[0].slice(0, index);
     }
 
     function initialize(the_room, the_account, message_last_key) {
@@ -213,7 +250,7 @@ var chat = function() {
             ajaxoptions : { dataType: 'json' },
             callback    : function (value, settings) { $(this).html(value.message) },
         });
-        $('#text-entry').submit(textEntrySubmit);
+        $('#text-entry').submit(textEntrySubmit).keydown(textEntryKeydown);
 
         // prepare the window for user interaction
         $('.message:visible .msg-timestamp abbr').each(function () { localizeTimestamp($(this)) });
@@ -224,40 +261,10 @@ var chat = function() {
         setTimeout(updateChat);    
     }
 
-    // takes a text field and an array of strings for autocompletion
-    function autocompleteUsername( input, data ) {
-        if ( input.value.length == input.selectionStart && input.value.length == input.selectionEnd ) {
-            var candidates = [];
-
-            if ( input.value.length > 0 ) {
-	        // filter data to find only strings that start with existing value
-	        for ( var i = 0; i < data.length; i++ ) {
-                    if ( data[ i ].toLowerCase().indexOf( input.value.toLowerCase() ) == 0 && data[ i ].length > input.value.length ) {
-	                candidates.push( data[ i ] );
-                    }
-	        }
-            }
-
-            if ( candidates.length > 0 ) {
-	        // some candidates for autocompletion are found
-	        if ( candidates.length == 1 ) {
-	            input.value = candidates[ 0 ] + ': ';
-	        } else {
-	            input.value = longestInCommon( candidates, input.value.length ) + ': ';
-	        }
-	        return true;
-            }
-
-        }
-
-        return false;
-    }
-
 
     // public
     return {
         initialize: initialize,
-        autocompleteUsername: autocompleteUsername,
     };
 
 }();
