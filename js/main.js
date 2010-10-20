@@ -19,7 +19,9 @@ var chat = function() {
     var $msg_template;
     var $text_entry_content;
 
-    var idleTime = 120000; // 2 minutes
+    var idleTime = 2000; // 2 minutes
+    var isIdle = false;
+    var missedMessageCount = 0; // incremented when idle
 
     function textEntrySubmit() {
         var msg = $text_entry_content.val();
@@ -137,7 +139,6 @@ var chat = function() {
                     switch(message.event) {               
                     case 'topic':
                         $('#room-topic').text(message.content);
-                        document.title = room.name + ' - ' + message.content;
                         break;
                     case 'part':
                         var $removeuser = 'user-' + message.sender_name;
@@ -166,6 +167,13 @@ var chat = function() {
                         $msg_new.addClass('event-' + message.event);
                         $msg_template.before($msg_new);
                     }
+                    
+                    if ( isIdle )
+                    {
+                        ++missedMessageCount;
+                        document.title = '(' + missedMessageCount + ') ' + room.name;
+                    }
+                    
                 });
                 scrollToBottom();
                 url_message_next = data.next;
@@ -187,7 +195,6 @@ var chat = function() {
         $.ajax({
             url: url_message_next,
             dataType: 'json',
-            data: { status: isIdle ? 'idle' : 'active', status_begin: idleStatusTransitionTime },
             success: success,
             error: error,
         });
@@ -239,11 +246,15 @@ var chat = function() {
     function OnIdle()
     {
         //sendMessage( );
+        isIdle = true;
     }
     
     function OnUnidle()
     {
         //sendMessage( );
+        isIdle = false;
+        missedMessageCount = 0;
+        document.title = room.name;
     }
 
     function initialize(the_room, the_account, message_last_key) {
