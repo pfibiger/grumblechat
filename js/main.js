@@ -233,15 +233,15 @@ var chat = function() {
         return candidates[0].slice(0, index);
     }
     
-    function createUploader(keyval){            
+    function createUploader(blobstore_action){
         var uploader = new qq.FileUploader({
             element: document.getElementById('file-uploader'),
-            action: '/room/' + keyval + '/upload',
+            action: blobstore_action,
             debug: true
         });           
     }
 
-    function initialize(the_room, the_account, message_last_key) {
+    function initialize(the_room, the_account, upload_url, message_last_key) {
         // initialize "statics"
         room = the_room;
         account = the_account;
@@ -251,7 +251,7 @@ var chat = function() {
         $text_entry_content = $('#text-entry-content');
         
         // create the file uploader
-        createUploader(room.key);
+        createUploader(upload_url);
 
         // apply jquery hooks and behaviors
         $('#room-topic').editable('/api/room/' + room.key + '/topic', {

@@ -58,5 +58,5 @@
 {% block script %}
 the_room = { key: '{{ room.key }}', name: '{{ room.name }}' };
 the_account = { nickname: '{{ account.nickname }}' };
-chat.initialize(the_room, the_account, '{{ message_last_key }}');
+chat.initialize(the_room, the_account, '{{ upload_url }}',' {{ message_last_key }}');
 {% endblock %}

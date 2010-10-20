@@ -76,6 +76,7 @@ class RoomHandler(webapp.RequestHandler):
             'roomlist': roomlist,
             'messages': messages,
             'message_event_names': Message_event_names,
+            'upload_url': str(upload_url)
             }
         if messages:
             context['message_last_key'] = messages[-1].key()
@@ -101,7 +102,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                           event=Message_event_codes['upload'], content="http://localhost.com:8080/room/" + room_key + "/download/" + blob_info.key, extra=blob_info.key)
         message.put()
         #self.redirect('/serve/%s' % blob_info.key())
-        #self.response.write('{success:true}')
+        self.response.write('{success:true}')
 
 class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, room_key, resource):
