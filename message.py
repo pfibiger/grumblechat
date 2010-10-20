@@ -102,6 +102,10 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 messages = [m for m in messages.filter('timestamp >', since_message.timestamp)]
                 if messages:
                     next_url = 'room/%s/msg/?since=%s' % (room.key(), messages[-1].key())
+
+                roomList.status = self.request.get( 'status' )
+                roomList.status_start_time = self.request.get( 'status_start_time' )
+
             elif date_start != '' and date_end != '':
                 # restrict by starting/ending datetime
                 iso8601_format = '%Y-%m-%dT%H:%M:%S'

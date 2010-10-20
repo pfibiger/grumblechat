@@ -22,7 +22,8 @@ class RoomList(db.Model):
     room = db.ReferenceProperty(reference_class=Room, required=True)
     status = db.StringProperty(default='')
     last_seen = db.DateTimeProperty(auto_now_add=True, required=True)
-    idle_start = db.DateTimeProperty()
+    status = db.StringProperty( default = '' )
+    status_start = db.DateTimeProperty()
 
     def update_presence(self):
         self.last_seen = datetime.now()

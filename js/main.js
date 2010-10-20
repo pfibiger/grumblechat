@@ -19,6 +19,8 @@ var chat = function() {
     var $msg_template;
     var $text_entry_content;
 
+    var idleTime = 120000; // 2 minutes
+
     function textEntrySubmit() {
         var msg = $text_entry_content.val();
         if (msg.length > 0) {
@@ -185,6 +187,7 @@ var chat = function() {
         $.ajax({
             url: url_message_next,
             dataType: 'json',
+            data: { status: isIdle ? 'idle' : 'active', status_begin: idleStatusTransitionTime },
             success: success,
             error: error,
         });
@@ -232,6 +235,16 @@ var chat = function() {
 
         return candidates[0].slice(0, index);
     }
+    
+    function OnIdle()
+    {
+        //sendMessage( );
+    }
+    
+    function OnUnidle()
+    {
+        //sendMessage( );
+    }
 
     function initialize(the_room, the_account, message_last_key) {
         // initialize "statics"
@@ -256,6 +269,11 @@ var chat = function() {
         $('.message:visible .msg-timestamp abbr').each(function () { localizeTimestamp($(this)) });
         scrollToBottom();
         $('#text-entry-content').focus();
+
+        // set up idle timer
+        $(document).bind( "idle.idleTimer", OnIdle );
+        $(document).bind( "active.idleTimer", OnUnidle );
+        $.idleTimer( idleTime );
 
         // start the update loop rolling
         setTimeout(updateChat);    
