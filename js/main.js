@@ -13,6 +13,7 @@ var chat = function() {
     var do_polling = true;
 
     var room;
+    var pristineTitle;
     var account;
     var url_message_next;
     var $chatlog;
@@ -139,6 +140,8 @@ var chat = function() {
                     switch(message.event) {               
                     case 'topic':
                         $('#room-topic').text(message.content);
+                        pristineTitle = room.name + ': ' + message.content;
+                        document.title = pristineTitle;
                         break;
                     case 'part':
                         var $removeuser = 'user-' + message.sender_name;
@@ -171,7 +174,7 @@ var chat = function() {
                     if ( isIdle )
                     {
                         ++missedMessageCount;
-                        document.title = '(' + missedMessageCount + ') ' + room.name;
+                        document.title = '(' + missedMessageCount + ') ' + pristineTitle;
                     }
                     
                 });
@@ -254,7 +257,7 @@ var chat = function() {
         //sendMessage( );
         isIdle = false;
         missedMessageCount = 0;
-        document.title = room.name;
+        document.title = pristineTitle;
     }
 
     function initialize(the_room, the_account, message_last_key) {
@@ -275,6 +278,9 @@ var chat = function() {
             callback    : function (value, settings) { $(this).html(value.message) },
         });
         $('#text-entry').submit(textEntrySubmit).keydown(textEntryKeydown);
+
+        // gather the bare title
+        pristineTitle = document.title;
 
         // prepare the window for user interaction
         $('.message:visible .msg-timestamp abbr').each(function () { localizeTimestamp($(this)) });
