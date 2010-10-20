@@ -19,7 +19,7 @@ var chat = function() {
     var $msg_template;
     var $text_entry_content;
 
-    var idleTime = 2000; // 2 minutes
+    var idleTime = 120000; // 2 minutes
     var isIdle = false;
     var missedMessageCount = 0; // incremented when idle
 
