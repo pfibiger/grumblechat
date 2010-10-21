@@ -173,6 +173,7 @@ var chat = function() {
                     
                     if ( isIdle )
                     {
+                        $.sound.play( '/sounds/message.wav' )
                         ++missedMessageCount;
                         document.title = '(' + missedMessageCount + ') ' + pristineTitle;
                     }

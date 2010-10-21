@@ -50,6 +50,10 @@ handlers:
 - url: /images
   static_dir: images
   expiration: 1d
+
+- url: /sounds
+  static_dir: sounds
+  expiration: 1d
   
 - url: /favicon.ico
   static_files: images/favicon.ico
