@@ -7,6 +7,7 @@ from datetime import datetime
 
 from models import *
 from utils import *
+import re
 
 
 class RoomCollectionHandler(webapp.RequestHandler):
@@ -26,20 +27,30 @@ class RoomCollectionHandler(webapp.RequestHandler):
                                                      'name': name}
                                                     ))
         else:
-            room = Room(name=name)
+            slug = name.lower()
+            slug = re.sub(r'\W+', '', slug)
+            room = Room.all().filter('slug =', slug).get()
+            i = 1
+            while room:
+                slug = slug + str(i)
+                room = Room.all().filter('slug =', slug).get()
+                i += 1
+            room = Room(name=name, slug=slug)
             room.put()
-            self.redirect('/room/' + str(room.key()))
+            self.redirect('/room/' + slug)
             
 
 class RoomHandler(webapp.RequestHandler):
 
     def get(self, room_key):
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        room = Room.all().filter('slug =', room_key).get()
         if not room:
-            # room doesn't exist
-            self.error(404)
-            self.response.out.write("no such room")
-            return
+            room = Room.all().filter('__key__ =', Key(room_key)).get()
+            if not room:
+                # room doesn't exist
+                self.error(404)
+                self.response.out.write("no such room")
+                return
         # return (up to) last 70 messages
         # FIXME should define '70' as a constant
         # need to enumerate query results to access last message below

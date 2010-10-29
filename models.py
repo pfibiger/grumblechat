@@ -15,6 +15,7 @@ class Account(db.Model):
 class Room(db.Model):
     name = db.StringProperty(required=True)
     topic = db.StringProperty(default='')
+    slug = db.StringProperty(required=True)
 
 
 class RoomList(db.Model):

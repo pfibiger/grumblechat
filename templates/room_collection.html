@@ -14,7 +14,7 @@
       </tr>
       {% for room in rooms %}
       <tr>
-        <td><a href="/room/{{ room.key }}">{{ room.name }}</a></td>
+        <td><a href="/room/{{ room.slug }}">{{ room.name }}</a></td>
         <td>{{ room.topic }}</td>
       </tr>
       {% endfor %}
