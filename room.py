@@ -14,8 +14,10 @@ class RoomCollectionHandler(webapp.RequestHandler):
 
     def get(self):
         rooms = Room.all().order('name')
+        roomlist = RoomList.all()
         self.response.out.write(template.render('templates/room_collection.html',
-                                                {'rooms': rooms}
+                                                {'rooms': rooms, 
+                                                 'roomlist': roomlist}
                                                 ))
 
     def post(self):

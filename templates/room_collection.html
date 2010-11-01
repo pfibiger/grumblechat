@@ -13,10 +13,20 @@
         <th>Topic</th>
       </tr>
       {% for room in rooms %}
-      <tr>
-        <td><a href="/room/{% firstof room.slug room.key %}">{{ room.name }}</a></td>
-        <td>{{ room.topic }}</td>
+      <tr class="room">
+        <td class="roomname"><a href="/room/{% firstof room.slug room.key %}">{{ room.name }}</a></td>
+        <td class="roomtopic">{{ room.topic }}</td>
       </tr>
+	  <tr class="roomusers">
+		<td class="roomuserlist">
+		{% for roomlisting in roomlist %}
+		{% ifequal roomlisting.room.key room.key %}
+		<ul>{{ roomlisting.account.nickname }}</ul>
+		{% endifequal %}
+		{% endfor %}
+		</td>
+		<td class="roomblank">&nbsp;</td>
+	  </tr>
       {% endfor %}
     </table>
 
