@@ -93,16 +93,16 @@ class LeaveHandler(webapp.RequestHandler):
 
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self, room_key):
-        upload_files = self.get_uploads('qqfile')  # 'qqfile' is file upload field in the form for the ajax plugin
+        upload_files = self.get_uploads('file')
         blob_info = upload_files[0]
         timestamp = datetime.now()
         account = get_account()
         room = Room.all().filter('__key__ =', Key(room_key)).get()
         message = Message(sender=account, room=room, timestamp=timestamp,
-                          event=Message_event_codes['upload'], content="http://localhost.com:8080/room/" + room_key + "/download/" + blob_info.key, extra=blob_info.key)
+                          event=Message_event_codes['upload'], content="http://localhost.com:8080/room/" + str(room_key) + "/download/" + blob_info.key(), extra=str(blob_info.key))
         message.put()
         #self.redirect('/serve/%s' % blob_info.key())
-        self.response.write('{success:true}')
+        self.response.out.write('{success:true}')
 
 class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, room_key, resource):

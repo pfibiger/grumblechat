@@ -23,12 +23,12 @@
     </table>
     <hr/>
     <h3 id="room-fileuploads">Upload:</h3>
-	<div id="file-uploader">       
-	    <noscript>          
-	        <p>Please enable JavaScript to use file uploader.</p>
-	        <!-- or put a simple form for upload here -->
-	    </noscript>         
-	</div>
+    <form>
+            <div id="container">
+                    <div id="filelist"></div>
+                    <a id="pickfiles" href="#">[Upload files]</a>
+            </div>
+    </form>
     <hr/>
     <form action="/room/{{ room.key }}/leave" method="post">
       <p>
