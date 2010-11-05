@@ -6,6 +6,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 from datetime import datetime
+import urllib
 
 from models import *
 from utils import *
@@ -99,10 +100,15 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         account = get_account()
         room = Room.all().filter('__key__ =', Key(room_key)).get()
         message = Message(sender=account, room=room, timestamp=timestamp,
-                          event=Message_event_codes['upload'], content="http://localhost.com:8080/room/" + str(room_key) + "/download/" + blob_info.key(), extra=str(blob_info.key))
+                          event=Message_event_codes['upload'], content="http://localhost.com:8080/room/" + str(room_key) + "/download/" + str(blob_info.key()), extra=str(blob_info.key))
         message.put()
-        #self.redirect('/serve/%s' % blob_info.key())
-        self.response.out.write('{success:true}')
+        self.redirect('/room/' + str(room_key) +'/upload/%s/success' % blob_info.key())
+
+class UploadSuccessHandler(webapp.RequestHandler):
+    def get(self, room_key, file_id):
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('%s/room/download/%s' % (self.request.host_url, file_id))
+
 
 class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, room_key, resource):
@@ -116,6 +122,7 @@ application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
                                       (r'/room/([^/]+)', RoomHandler),
                                       (r'/room/([^/]+)/leave', LeaveHandler),
                                       (r'/room/([^/]+)/upload', UploadHandler),
+                                      (r'/room/([^/]+)/upload/([^/]+)/success', UploadSuccessHandler),
                                       (r'/room/([^/]+)/download/([^/]+)', DownloadHandler)],
                                      debug=True)
 
