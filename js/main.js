@@ -270,23 +270,21 @@ var chat = function() {
         $msg_template = $chatlog.find('.message').last();
         $text_entry_content = $('#text-entry-content');
         
+        // initialize file uploader
         var uploader = new plupload.Uploader({
-          runtimes: 'gears,html5,flash,html4',
-          browse_button: 'pickfiles',
-          container: 'container',
-          url: upload_url,
-          use_query_string: false,
-          multipart: true,
-          flash_swf_url: '/js/plupload/plupload.flash.swf',
-          multi_selection:false,
+            runtimes: 'gears,html5,flash,html4',
+            browse_button: 'pickfiles',
+            container: 'container',
+            url: upload_url,
+            use_query_string: false,
+            multipart: true,
+            flash_swf_url: '/js/plupload/plupload.flash.swf',
+            multi_selection: false,
         });
         uploader.init();
-        uploader.bind('FilesAdded', function(up, files) {
-                if(up.state!=2 & files.length>0){
-                       up.start();
-                }
+        uploader.bind('FilesAdded', function (up, files) {
+            if (up.state != 2 && files.length > 0) up.start();
         });
-        
 
         // apply jquery hooks and behaviors
         $('#room-topic').editable('/api/room/' + room.key + '/topic', {
