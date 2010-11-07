@@ -99,8 +99,10 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         timestamp = datetime.now()
         account = get_account()
         room = Room.all().filter('__key__ =', Key(room_key)).get()
+        blob_key = str(blob_info.key())
+        content = self.request.application_url + "/room/" + str(room_key) + "/download/" + blob_key
         message = Message(sender=account, room=room, timestamp=timestamp,
-                          event=Message_event_codes['upload'], content="http://localhost.com:8080/room/" + str(room_key) + "/download/" + str(blob_info.key()), extra=str(blob_info.key))
+                          event=Message_event_codes['upload'], content=content, extra=blob_key)
         message.put()
         self.redirect('/room/' + str(room_key) +'/upload/%s/success' % blob_info.key())
 

@@ -252,14 +252,13 @@ var chat = function() {
           flash_swf_url: '/js/plupload/plupload.flash.swf',
           multi_selection:false,
         });
-        
+        uploader.init();
         uploader.bind('FilesAdded', function(up, files) {
-                if(uploader.state!=2 & files.length>0){
-                       uploader.start();
+                if(up.state!=2 & files.length>0){
+                       up.start();
                 }
         });
         
-        uploader.init();
 
         // apply jquery hooks and behaviors
         $('#room-topic').editable('/api/room/' + room.key + '/topic', {
