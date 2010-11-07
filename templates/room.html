@@ -21,7 +21,15 @@
       </tr>
       {% endfor %}
     </table>
-
+    <hr/>
+    <h3 id="room-fileuploads">Upload:</h3>
+    <form>
+            <div id="container">
+                    <div id="filelist"></div>
+                    <a id="pickfiles" href="#">[Upload files]</a>
+            </div>
+    </form>
+    <hr/>
     <form action="/room/{{ room.key }}/leave" method="post">
       <p>
         <input type="submit" value="Leave Room"/>
@@ -50,5 +58,5 @@
 {% block script %}
 the_room = { key: '{{ room.key }}', name: '{{ room.name }}' };
 the_account = { nickname: '{{ account.nickname }}' };
-chat.initialize(the_room, the_account, '{{ message_last_key }}');
+chat.initialize(the_room, the_account, '{{ upload_url }}','{{ message_last_key }}');
 {% endblock %}

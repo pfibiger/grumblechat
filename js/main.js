@@ -261,7 +261,7 @@ var chat = function() {
         document.title = pristineTitle;
     }
 
-    function initialize(the_room, the_account, message_last_key) {
+    function initialize(the_room, the_account, upload_url, message_last_key) {
         // initialize "statics"
         room = the_room;
         account = the_account;
@@ -269,6 +269,24 @@ var chat = function() {
         $chatlog = $('#chatlog');
         $msg_template = $chatlog.find('.message').last();
         $text_entry_content = $('#text-entry-content');
+        
+        var uploader = new plupload.Uploader({
+          runtimes: 'gears,html5,flash,html4',
+          browse_button: 'pickfiles',
+          container: 'container',
+          url: upload_url,
+          use_query_string: false,
+          multipart: true,
+          flash_swf_url: '/js/plupload/plupload.flash.swf',
+          multi_selection:false,
+        });
+        uploader.init();
+        uploader.bind('FilesAdded', function(up, files) {
+                if(up.state!=2 & files.length>0){
+                       up.start();
+                }
+        });
+        
 
         // apply jquery hooks and behaviors
         $('#room-topic').editable('/api/room/' + room.key + '/topic', {

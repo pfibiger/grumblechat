@@ -3,7 +3,10 @@ from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext import blobstore
+from google.appengine.ext.webapp import blobstore_handlers
 from datetime import datetime
+import urllib
 
 from models import *
 from utils import *
@@ -53,6 +56,9 @@ class RoomHandler(webapp.RequestHandler):
                 self.error(404)
                 self.response.out.write("no such room")
                 return
+            
+        upload_url = blobstore.create_upload_url('/room/' + str(room_key) + '/upload')
+        
         # return (up to) last 70 messages
         # FIXME should define '70' as a constant
         # need to enumerate query results to access last message below
@@ -84,6 +90,7 @@ class RoomHandler(webapp.RequestHandler):
             'roomlist': roomlist,
             'messages': messages,
             'message_event_names': Message_event_names,
+            'upload_url': str(upload_url)
             }
         if messages:
             context['message_last_key'] = messages[-1].key()
@@ -98,9 +105,40 @@ class LeaveHandler(webapp.RequestHandler):
         leave_room(room=room, account=account)
         self.redirect('/room/')
 
+class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+    def post(self, room_key):
+        upload_files = self.get_uploads('file')
+        blob_info = upload_files[0]
+        timestamp = datetime.now()
+        account = get_account()
+        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        blob_key = str(blob_info.key())
+        content = self.request.application_url + "/room/" + str(room_key) + "/download/" + blob_key
+        message = Message(sender=account, room=room, timestamp=timestamp,
+                          event=Message_event_codes['upload'], content=content, extra=blob_key)
+        message.put()
+        self.redirect('/room/' + str(room_key) +'/upload/%s/success' % blob_info.key())
+
+class UploadSuccessHandler(webapp.RequestHandler):
+    def get(self, room_key, file_id):
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('%s/room/download/%s' % (self.request.host_url, file_id))
+
+
+class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
+    def get(self, room_key, resource):
+        resource = str(urllib.unquote(resource))
+        blob_info = blobstore.BlobInfo.get(resource)
+        self.send_blob(blob_info)
+
+
+
 application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
                                       (r'/room/([^/]+)', RoomHandler),
-                                      (r'/room/([^/]+)/leave', LeaveHandler)],
+                                      (r'/room/([^/]+)/leave', LeaveHandler),
+                                      (r'/room/([^/]+)/upload', UploadHandler),
+                                      (r'/room/([^/]+)/upload/([^/]+)/success', UploadSuccessHandler),
+                                      (r'/room/([^/]+)/download/([^/]+)', DownloadHandler)],
                                      debug=True)
 
 def main():

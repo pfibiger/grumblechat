@@ -38,6 +38,7 @@ Message_event_names = {
     3: 'part',
     4: 'action',
     5: 'status',
+    6: 'upload',
     }
 Message_event_codes = dict([(v, k) for (k, v) in Message_event_names.items()])
 class Message(db.Model):
