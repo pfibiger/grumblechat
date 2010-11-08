@@ -128,7 +128,7 @@ class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, room_slug, resource):
         resource = str(urllib.unquote(resource))
         blob_info = blobstore.BlobInfo.get(resource)
-        self.send_blob(blob_info)
+        self.send_blob(blob_info, save_as=blob_info.filename)
 
 
 
