@@ -27,7 +27,7 @@
       {% endfor %}
     </table></div>
 
-    <form action="/room/{{ room.key }}/leave" method="post">
+    <form action="/room/{{ room.key.name }}/leave" method="post">
       <p>
         <input type="submit" value="Leave Room"/>
       </p>

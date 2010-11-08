@@ -7,7 +7,7 @@ from google.appengine.api import users
 from models import *
 
 
-__all__ = ['leave_room', 'gravatar', 'get_account', 'transform_message']
+__all__ = ['leave_room', 'gravatar', 'slugify', 'get_account', 'transform_message']
 
 
 def leave_room(room=None, account=None, session=None):
@@ -51,6 +51,13 @@ def gravatar(email):
         'r':rating,
         'd':default_image})
     return """<img src="%s" alt="gravatar" />""" % gravatar_url
+
+
+def slugify(title):
+    slug = title.lower()
+    slug = re.sub(r'[^\w\s-]', '', slug)
+    slug = re.sub(r'[\s_-]+', '-', slug)
+    return slug
 
 
 def get_account():

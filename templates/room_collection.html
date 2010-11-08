@@ -9,7 +9,7 @@
     <table id="rounded-corner">
       <thead>
 	    <tr>
-          <th scope="col" class="rounded-roomname"><a href="/room/{% firstof room.slug room.key %}">{{ room.name }}</a></th>
+          <th scope="col" class="rounded-roomname"><a href="/room/{{ room.key.name }}">{{ room.name }}</a></th>
           <th scope="col" class="rounded-topic">{{ room.topic }}</th>
 		</tr>
 	  </thead>

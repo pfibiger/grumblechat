@@ -32,32 +32,31 @@ class RoomCollectionHandler(webapp.RequestHandler):
                                                      'name': name}
                                                     ))
         else:
-            slug = name.lower()
-            slug = re.sub(r'\W+', '', slug)
-            room = Room.all().filter('slug =', slug).get()
+            room_slug = slugify(name)
+            base_slug = room_slug
             i = 1
-            while room:
-                slug = slug + str(i)
-                room = Room.all().filter('slug =', slug).get()
+            while True:  # do-while loop
+                room = Room.get_by_key_name(room_slug)
+                if not room:
+                    break 
+                room_slug = base_slug + str(i)
                 i += 1
-            room = Room(name=name, slug=slug)
+            room = Room(key_name=room_slug, name=name)
             room.put()
-            self.redirect('/room/' + slug)
+            self.redirect('/room/%s' % room_slug)
             
 
 class RoomHandler(webapp.RequestHandler):
 
-    def get(self, room_key):
-        room = Room.all().filter('slug =', room_key).get()
+    def get(self, room_slug):
+        room = Room.get_by_key_name(room_slug)
         if not room:
-            room = Room.all().filter('__key__ =', Key(room_key)).get()
-            if not room:
-                # room doesn't exist
-                self.error(404)
-                self.response.out.write("no such room")
-                return
+            # room doesn't exist
+            self.error(404)
+            self.response.out.write("no such room")
+            return
             
-        upload_url = blobstore.create_upload_url('/room/' + str(room_key) + '/upload')
+        upload_url = blobstore.create_upload_url('/room/%s/upload' % room_slug)
         
         # return (up to) last 70 messages
         # FIXME should define '70' as a constant
@@ -99,34 +98,34 @@ class RoomHandler(webapp.RequestHandler):
                                                     
 class LeaveHandler(webapp.RequestHandler):
     
-    def post(self, room_key):
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+    def post(self, room_slug):
+        room = Room.get_by_key_name(room_slug)
         account = get_account()
         leave_room(room=room, account=account)
         self.redirect('/room/')
 
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
-    def post(self, room_key):
+    def post(self, room_slug):
         upload_files = self.get_uploads('file')
         blob_info = upload_files[0]
         timestamp = datetime.now()
         account = get_account()
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        room = Room.get_by_key_name(room_slug)
         blob_key = str(blob_info.key())
-        content = self.request.application_url + "/room/" + str(room_key) + "/download/" + blob_key
+        content = '%s/room/%s/download/%s' % (self.request.application_url, room_slug, blob_key)
         message = Message(sender=account, room=room, timestamp=timestamp,
                           event=Message_event_codes['upload'], content=content, extra=blob_key)
         message.put()
-        self.redirect('/room/' + str(room_key) +'/upload/%s/success' % blob_info.key())
+        self.redirect('/room/%s/upload/%s/success' % (room_slug, blob_info.key()))
 
 class UploadSuccessHandler(webapp.RequestHandler):
-    def get(self, room_key, file_id):
+    def get(self, room_slug, file_id):
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write('%s/room/download/%s' % (self.request.host_url, file_id))
+        self.response.out.write('%s/room/%s/download/%s' % (self.request.host_url, room_slug, file_id))
 
 
 class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
-    def get(self, room_key, resource):
+    def get(self, room_slug, resource):
         resource = str(urllib.unquote(resource))
         blob_info = blobstore.BlobInfo.get(resource)
         self.send_blob(blob_info)

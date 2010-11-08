@@ -13,10 +13,10 @@ from utils import *
 
 class MessageCollectionHandler(webapp.RequestHandler):
 
-    def post(self, room_key):
+    def post(self, room_slug):
         user = users.get_current_user()
         sender = Account.all().filter('user =', user).get()
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        room = Room.get_by_key_name(room_slug)
         timestamp = datetime.now()
         content = self.request.get('content')
         extra = self.request.get('extra')
@@ -32,8 +32,8 @@ class MessageCollectionHandler(webapp.RequestHandler):
 
 class APIMessageHandler(webapp.RequestHandler):
 
-    def get(self, room_key, message_key):
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+    def get(self, room_slug, message_key):
+        room = Room.get_by_key_name(room_slug)
         if not room:
             self.error(404)
             self.response.out.write("no such room")
@@ -46,7 +46,7 @@ class APIMessageHandler(webapp.RequestHandler):
         message = transform_message(message)
         url = "/api/"
         sender_url = url + "account/" + str(message.sender.key())
-        room_url = url + "room/" + str(message.room.key())
+        room_url = url + "room/" + str(message.room.key().name())
         payload = {'timestamp' : message.timestamp.isoformat(), 'content' : message.content, 
                    'sender' : sender_url, 'room' : room_url, 'event' : Message_event_names[message.event],
                    'extra' : extra, 'id' : message.key().id()}
@@ -55,10 +55,10 @@ class APIMessageHandler(webapp.RequestHandler):
 
 class APIMessageCollectionHandler(webapp.RequestHandler):
 
-    def post(self, room_key):
+    def post(self, room_slug):
         user = users.get_current_user()
         sender = Account.all().filter('user =', user).get()
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        room = Room.get_by_key_name(room_slug)
         timestamp = datetime.now()
         content = self.request.get('message')
         payload = {}
@@ -77,8 +77,8 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
         json = simplejson.dumps(payload)
         self.response.out.write(json)
 
-    def get(self, room_key):
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+    def get(self, room_slug):
+        room = Room.get_by_key_name(room_slug)
         if not room:
             # room doesn't exist
             self.error(404)
@@ -101,7 +101,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 # need to enumerate query results to access last message
                 messages = [m for m in messages.filter('timestamp >', since_message.timestamp)]
                 if messages:
-                    next_url = 'room/%s/msg/?since=%s' % (room.key(), messages[-1].key())
+                    next_url = 'room/%s/msg/?since=%s' % (room.key().name(), messages[-1].key())
 
                 roomlist.status = self.request.get( 'status' )
                 roomlist.status_start_time = self.request.get( 'status_start_time' )
@@ -121,9 +121,9 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 # need to enumerate query results to access last message
                 messages = [m for m in reversed(Message.all().filter('room =', room).order('-timestamp').fetch(70))]
                 if messages:
-                    next_url = 'room/%s/msg/?since=%s' % (room.key(), messages[-1].key())
+                    next_url = 'room/%s/msg/?since=%s' % (room.key().name(), messages[-1].key())
                 else:
-                    next_url = 'room/%s/msg/' % (room.key())
+                    next_url = 'room/%s/msg/' % (room.key().name())
             url_base = "/api/"
             payload = {}
             if messages:
@@ -131,7 +131,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 for message in messages:
                     message = transform_message(message)
                     sender_url = url_base + "account/" + str(message.sender.key())
-                    room_url = url_base + "room/" + str(message.room.key())
+                    room_url = url_base + "room/" + str(message.room.key().name())
                     message_data = {
                         'timestamp' : message.timestamp.isoformat(),
                         'content' : message.content, 
@@ -150,10 +150,10 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
 
 class TopicHandler(webapp.RequestHandler):
 
-    def post(self, room_key):
+    def post(self, room_slug):
         user = users.get_current_user()
         sender = Account.all().filter('user =', user).get()
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        room = Room.get_by_key_name(room_slug)
         topic = self.request.get('topic')
         if not sender:
             # no account for this user
@@ -165,10 +165,10 @@ class TopicHandler(webapp.RequestHandler):
         
 class APITopicHandler(webapp.RequestHandler):
 
-    def post(self, room_key):
+    def post(self, room_slug):
         user = users.get_current_user()
         sender = Account.all().filter('user =', user).get()
-        room = Room.all().filter('__key__ =', Key(room_key)).get()
+        room = Room.get_by_key_name(room_slug)
         topic = self.request.get('topic')
         timestamp = datetime.now()
         #content = self.request.get('message')
