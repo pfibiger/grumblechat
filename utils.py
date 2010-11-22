@@ -1,6 +1,7 @@
 import urllib
 import hashlib
 import re
+import markdown
 from datetime import datetime
 from google.appengine.api import users
 
@@ -67,6 +68,10 @@ def get_account():
     
 def transform_message(message):
     content = message.content
+    md = markdown.Markdown(
+            safe_mode="escape",
+            output_format='html4'
+    )
     if content is not None:
         r="((?:https?)://[^ \t\n\r()\"']+)"
         m = re.search(r, content)
@@ -86,7 +91,7 @@ def transform_message(message):
             else:
                 new_content = '<a href="' + url + '" target="_blank">' + url + '</a>'
             content = re.sub(r,new_content,content)
-        message.content = content
+        message.content = md.convert(content)
     else:
         message.content = ''
     return message
