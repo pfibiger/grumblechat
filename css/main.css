@@ -27,8 +27,7 @@
 }
 
 .msg-content p {
-    margin: 0px 0px;
-    line-height: 1em;
+    margin: 0px;
 }
 
 .msg-timestamp abbr {
