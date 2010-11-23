@@ -81,9 +81,11 @@ def transform_message(message):
             m = re.search(r2,url)
             new_content = ''
             if (m):
-                new_content = '![' + url + '](' + url + ')'
+                #new_content = '![' + url + '](' + url + ')'
+                new_content = '[![Image](' + url + ')](' + url +')'
             else:
-                new_content = '[' + url + '](' + url + ')'
+                #new_content = '[' + url + '](' + url + ')'
+                new_content = '<' + url + '>'
             content = re.sub(r,new_content,content)
         message.content = md.convert(content)
     else:
