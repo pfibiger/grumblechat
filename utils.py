@@ -68,8 +68,13 @@ def get_account():
     
 def transform_message(message):
     content = message.content
+    markdown.HTML_REMOVED_TEXT = ""
     md = markdown.Markdown(
             safe_mode="escape",
+            output_format='html4'
+    )
+    md_nohtml = markdown.Markdown(
+            safe_mode="replace",
             output_format='html4'
     )
     if content is not None:
@@ -87,7 +92,11 @@ def transform_message(message):
                 #new_content = '[' + url + '](' + url + ')'
                 new_content = '<' + url + '>'
             content = re.sub(r,new_content,content)
-        message.content = md.convert(content)
+        if (Message_event_names[message.event] == "topic"):
+            message.content = md_nohtml.convert(content)
+            message.content = re.sub("<\/?p>","", message.content)
+        else:
+            message.content = md.convert(content)
     else:
         message.content = ''
     return message
