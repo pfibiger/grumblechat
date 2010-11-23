@@ -77,19 +77,13 @@ def transform_message(message):
         m = re.search(r, content)
         if (m):
             url = m.group(1)
-            #content=re.sub(r,r'<img src="\1">',content)
-            #content=re.sub(r,r'<a href="\1">\1</a>',content)
             r2="(?i)\.(jpg|png|gif)$"
             m = re.search(r2,url)
-            r2="(?i)\.(mp3)$"
-            m2 = re.search(r2,url)
             new_content = ''
             if (m):
-                new_content = '<a href="' + url + '" target="_blank">' + '<img class="embedded-image" src="' + url + '">' + '</a>'
-            elif (m2):
-                new_content = '<p id="audioplayer_' + str(message.key().id()) +'">'+ url +'</p><script type="text/javascript"> AudioPlayer.embed("audioplayer_' + str(message.key().id()) +'", {soundFile: "' + url +'"});</script>'  
+                new_content = '![' + url + '](' + url + ')'
             else:
-                new_content = '<a href="' + url + '" target="_blank">' + url + '</a>'
+                new_content = '[' + url + '](' + url + ')'
             content = re.sub(r,new_content,content)
         message.content = md.convert(content)
     else:
