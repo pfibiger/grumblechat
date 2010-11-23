@@ -289,7 +289,7 @@ var chat = function() {
         // apply jquery hooks and behaviors
         $('#room-topic').editable('/api/room/' + room.key + '/topic', {
             indicator   : 'Saving...',
-            tooltip     : 'Click to edit',
+            tooltip     : 'Click to change topic',
             name        : 'topic',
             ajaxoptions : { dataType: 'json' },
             callback    : function (value, settings) { $(this).html(value.message) },
