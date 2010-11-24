@@ -78,18 +78,8 @@ def transform_message(message):
             output_format='html4'
     )
     if content is not None:
-        r="((?:https?)://[^ \t\n\r()\"']+)"
-        m = re.search(r, content)
-        if (m):
-            url = m.group(1)
-            r2="(?i)\.(jpg|png|gif)$"
-            m = re.search(r2,url)
-            new_content = ''
-            if (m):
-                new_content = '[![Image](' + url + ')](' + url +')'
-            else:
-                new_content = '<' + url + '>'
-            content = re.sub(r,new_content,content)
+        content = re.sub(r"((?:https?)://[^ \t\n\r()\"']+)", r"<\1>", content)
+        content = re.sub(r"<(http[^>]+(?:jpg|png|gif))>", r"[![Image](\1)](\1)", content)
         if (Message_event_names[message.event] == "topic"):
             message.content = md_nohtml.convert(content)
             message.content = re.sub("<\/?p>","", message.content)
