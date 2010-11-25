@@ -105,6 +105,8 @@ class LeaveHandler(webapp.RequestHandler):
         leave_room(room=room, account=account)
         self.redirect('/room/')
 
+# upload code based on Nick Johnson's blog posts and uses his modified plupload
+# http://blog.notdot.net/2010/04/Implementing-a-dropbox-service-with-the-Blobstore-API-part-2
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self, room_slug):
         upload_files = self.get_uploads('file')
