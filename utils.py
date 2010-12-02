@@ -1,6 +1,7 @@
 import urllib
 import hashlib
 import re
+import markdown
 from datetime import datetime
 from google.appengine.api import users
 
@@ -46,7 +47,7 @@ def gravatar(email):
     gravatar_url = "http://www.gravatar.com/avatar.php?"
     #gravatar_url += hashlib.md5(email).hexdigest()
     gravatar_url += urllib.urlencode({
-        'gravatar_id':hashlib.md5(email).hexdigest(),
+        'gravatar_id':hashlib.md5(email.lower()).hexdigest(),
         's':str(size),
         'r':rating,
         'd':default_image})
@@ -67,26 +68,23 @@ def get_account():
     
 def transform_message(message):
     content = message.content
+    markdown.HTML_REMOVED_TEXT = ""
+    md = markdown.Markdown(
+            safe_mode="escape",
+            output_format='html4'
+    )
+    md_nohtml = markdown.Markdown(
+            safe_mode="replace",
+            output_format='html4'
+    )
     if content is not None:
-        r="((?:https?)://[^ \t\n\r()\"']+)"
-        m = re.search(r, content)
-        if (m):
-            url = m.group(1)
-            #content=re.sub(r,r'<img src="\1">',content)
-            #content=re.sub(r,r'<a href="\1">\1</a>',content)
-            r2="(?i)\.(jpg|png|gif)$"
-            m = re.search(r2,url)
-            r2="(?i)\.(mp3)$"
-            m2 = re.search(r2,url)
-            new_content = ''
-            if (m):
-                new_content = '<a href="' + url + '" target="_blank">' + '<img class="embedded-image" src="' + url + '">' + '</a>'
-            elif (m2):
-                new_content = '<p id="audioplayer_' + str(message.key().id()) +'">'+ url +'</p><script type="text/javascript"> AudioPlayer.embed("audioplayer_' + str(message.key().id()) +'", {soundFile: "' + url +'"});</script>'  
-            else:
-                new_content = '<a href="' + url + '" target="_blank">' + url + '</a>'
-            content = re.sub(r,new_content,content)
-        message.content = content
+        content = re.sub(r"((?:https?)://[^ \t\n\r()\"']+)", r"<\1>", content)
+        content = re.sub(r"<(http[^>]+(?:jpg|png|gif))>", r"[![Image](\1)](\1)", content)
+        if (Message_event_names[message.event] == "topic"):
+            message.content = md_nohtml.convert(content)
+            message.content = re.sub("<\/?p>","", message.content)
+        else:
+            message.content = md.convert(content)
     else:
         message.content = ''
     return message

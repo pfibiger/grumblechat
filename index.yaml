@@ -27,3 +27,8 @@ indexes:
   - name: room
   - name: timestamp
     direction: desc
+
+- kind: Room
+  properties:
+  - name: visibility
+  - name: name

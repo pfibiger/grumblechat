@@ -2,7 +2,7 @@ from google.appengine.ext import db
 from datetime import datetime
 
 
-__all__ = ['Account', 'Room', 'RoomList', 'Message_event_names', 'Message_event_codes', 'Message']
+__all__ = ['Account', 'Room', 'Room_visibility_names', 'Room_visibility_codes', 'RoomList', 'Message_event_names', 'Message_event_codes', 'Message']
 
 
 class Account(db.Model):
@@ -11,10 +11,16 @@ class Account(db.Model):
     url = db.StringProperty(default='')
     gravatar_tag = db.StringProperty(default='')    
 
-
+Room_visibility_names = {
+    0: 'public',
+    1: 'hidden',
+    2: 'private',
+    }
+Room_visibility_codes = dict([(v, k) for (k, v) in Room_visibility_names.items()])
 class Room(db.Model):
     name = db.StringProperty(required=True)
     topic = db.StringProperty(default='')
+    visibility = db.IntegerProperty(required=False, choices=Room_visibility_codes.values())
 
 
 class RoomList(db.Model):
@@ -45,5 +51,5 @@ class Message(db.Model):
     room = db.ReferenceProperty(reference_class=Room, required=True)
     timestamp = db.DateTimeProperty(auto_now_add=True, required=True)
     event = db.IntegerProperty(required=True, choices=Message_event_codes.values())
-    content = db.StringProperty()
+    content = db.TextProperty()
     extra = db.StringProperty()

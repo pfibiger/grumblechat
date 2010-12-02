@@ -16,7 +16,7 @@ import re
 class RoomCollectionHandler(webapp.RequestHandler):
 
     def get(self):
-        rooms = Room.all().order('name')
+        rooms = Room.all().filter('visibility =', Room_visibility_codes['public']).order('name')
         roomlist = RoomList.all()
         self.response.out.write(template.render('templates/room_collection.html',
                                                 {'rooms': rooms, 
@@ -25,6 +25,7 @@ class RoomCollectionHandler(webapp.RequestHandler):
 
     def post(self):
         name = self.request.get('name')
+        visibility = self.request.get('visibility', default_value='hidden')
         room = Room.all().filter('name =', name).get()
         if room:
             self.response.out.write(template.render('templates/room_collection.html',
@@ -41,7 +42,7 @@ class RoomCollectionHandler(webapp.RequestHandler):
                     break 
                 room_slug = base_slug + str(i)
                 i += 1
-            room = Room(key_name=room_slug, name=name)
+            room = Room(key_name=room_slug, name=name, visibility=Room_visibility_codes[visibility])
             room.put()
             self.redirect('/room/%s' % room_slug)
             
@@ -104,6 +105,8 @@ class LeaveHandler(webapp.RequestHandler):
         leave_room(room=room, account=account)
         self.redirect('/room/')
 
+# upload code based on Nick Johnson's blog posts and uses his modified plupload
+# http://blog.notdot.net/2010/04/Implementing-a-dropbox-service-with-the-Blobstore-API-part-2
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self, room_slug):
         upload_files = self.get_uploads('file')

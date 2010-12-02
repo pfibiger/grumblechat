@@ -26,11 +26,15 @@
     border-right: 0;
 }
 
+.msg-content p {
+    margin: 0px;
+}
+
 .msg-timestamp abbr {
     border-bottom: 0;
 }
 
-.msg-content img.embedded-image {
+.msg-content img {
     max-width: 400px;
     max-height: 400px;
 }
