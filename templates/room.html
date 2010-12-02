@@ -7,20 +7,22 @@
 
 
 {% block content %}
-
 <div id="sidebar">
     <h2 id="room-name">{{ room.name }}</h2>
     <h3 id="room-topic" class="edit">{{ room.topic }}</h3>
     <hr/>
-    <h3 id="room-users">Users:</h3>
-    <table id="userlist">
-      {% for roomlisting in roomlist %}
-      <tr id="user-{{ roomlisting.account.nickname }}">
-        <td>{{ roomlisting.account.gravatar_tag }}
-        {{ roomlisting.account.nickname }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+    <div class="user-stuff">
+        <h3 id="room-users">Users:</h3>
+        <table id="userlist">
+          {% for roomlisting in roomlist %}
+          <tr id="user-{{ roomlisting.account.nickname }}">
+            <td>{{ roomlisting.account.gravatar_tag }}
+            {{ roomlisting.account.nickname }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+    </div>
+    <div class="uploads">
     <hr/>
     <h3 id="room-fileuploads">Upload:</h3>
     <form>
@@ -29,10 +31,11 @@
                     <a id="pickfiles" href="#">[Upload files]</a>
             </div>
     </form>
+    </div>
     <hr/>
     <form action="/room/{{ room.key.name }}/leave" method="post">
       <p>
-        <input type="submit" value="Leave Room"/>
+        <input type="submit" value="Leave Room" id="leave" />
       </p>
     </form>
 	<div id="settings">

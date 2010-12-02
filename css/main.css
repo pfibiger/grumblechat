@@ -174,3 +174,41 @@ h3#room-users {
 #rounded-corner tbody tr:hover td {
     background:#d0dafd;
 }
+
+@media screen and (max-device-width: 480px) {
+  
+#chatlog {width: 100%;}
+  #content {
+    positon: relative;
+  }
+
+  #text-entry {
+      position: absolute;
+  }
+
+ #text-entry-content {
+     width: 90%;
+     padding-left: 5%;
+     padding-left: 5%;
+  }
+
+  #sidebar {
+      width: 90%;
+      padding-left: 5%;
+      padding-right: 5%;
+  }
+
+  #sidebar h2, #sidebar h3 {
+      display: inline;
+  }
+  
+  #sidebar hr, .uploads, .user-stuff {
+      display: none;
+  }
+
+  #sidebar input#leave {
+      float: right;
+      margin-top: -40px; 
+    }
+}
+

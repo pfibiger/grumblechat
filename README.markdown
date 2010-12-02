@@ -1,8 +1,8 @@
 # grumblechat 
 
-*A free Google Appengine based chat system*
+*A free Google App Engine based chat system*
 
-Created as a free alternative to irc, talkerapp, basecamp, etc and as an opportunity to play around with Appengine. There's still a lot of work left to do, but for a small organization it's easy to deploy and very usable. If you'd like to contribute, we welcome patches/forks. See Issues for a list of outstanding features or bugs.
+Created as a free alternative to IRC, Talker, Campfire, etc and as an opportunity to play around with Appengine. There's still a lot of work left to do, but for a small organization it's easy to deploy and very usable. If you'd like to contribute, we welcome patches/forks. See Issues for a list of outstanding features or bugs.
 
 ## Getting Started with grumblechat 
 
