@@ -71,7 +71,8 @@ def transform_message(message):
     markdown.HTML_REMOVED_TEXT = ""
     md = markdown.Markdown(
             safe_mode="escape",
-            output_format='html4'
+            output_format='html4',
+            extensions=['urlize']
     )
     md_nohtml = markdown.Markdown(
             safe_mode="replace",
