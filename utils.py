@@ -71,7 +71,8 @@ def transform_message(message):
     markdown.HTML_REMOVED_TEXT = ""
     md = markdown.Markdown(
             safe_mode="escape",
-            output_format='html4'
+            output_format='html4',
+            extensions=['urlize']
     )
     md_nohtml = markdown.Markdown(
             safe_mode="replace",
@@ -79,7 +80,7 @@ def transform_message(message):
     )
     if content is not None:
         content = re.sub(r"((?:https?)://[^ \t\n\r()\"']+)", r"<\1>", content)
-        content = re.sub(r"<(http[^>]+(?:jpg|png|gif))>", r"[![Image](\1)](\1)", content)
+        content = re.sub(r"<(http[^>]+(?:jpg|jpeg|png|gif))>", r"[![Image](\1)](\1)", content)
         if (Message_event_names[message.event] == "topic"):
             message.content = md_nohtml.convert(content)
             message.content = re.sub("<\/?p>","", message.content)
