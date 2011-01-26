@@ -43,21 +43,20 @@
 		<a href="/account/{{ account.key }}">My Settings</a>
 	</div>
 </div>
-
+<div class="superfluous-surrounding">
 <table id="chatlog">
   {% for message in messages %}
     {% include "room_message.html" %}
   {% endfor %}
   {% include "room_message.html" %}
 </table>
-<div class="text-entry-spacer"></div>
 
 <form id="text-entry" action="/room/{{ room.key.name }}/msg" method="post">  
   <div>
-    <input id="text-entry-content" type="text" name="content" autocomplete="off"/>
-    <input id="send-message" type="submit" value="Send"/>
+    <input id="text-entry-content" type="text" name="content" autocomplete="off" placeholder="UR MSG HERE"/>
   </div>
 </form>
+</div>
 
 {% endblock %}
 

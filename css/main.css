@@ -1,21 +1,39 @@
+body {
+    background: #1074da url(/images/grain.png) fixed;
+    margin: 0;
+    padding: 0;
+}
+
+a {color: #3087e0;}
+
+.superfluous-glow {
+    background: url(/images/glowlarge.png) no-repeat top center;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+}
+
 #chatlog {
-    width: 81%;
+    width: 100%;
     margin: 0;
     font-size: 120%;
     border-collapse: collapse;
+    margin-bottom: -11px;
+    position: relative;
+    margin-top: -20px;
 }
 
 .msg-timestamp {
     font-size: 80%;
     color: #808080;
-    background: #f0f0f0;
+    background: #f9f8f8;
     text-align: right;
 }
 
 .msg-sender {
     text-align: right;
     font-weight: bold;
-    background: #f0f0f0;
+    background: #f9f8f8;
     white-space: nowrap;
 }
 
@@ -114,28 +132,31 @@ h3#room-users {
 }
 
 #text-entry {
-    display: table;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    background: #ffffff;
-    height: 5em;
     width: 100%;
-    padding: 0 1.5em;
-}
-
-#text-entry > div {
-    display: table-cell;
-    vertical-align: middle;
+    background: #e3e3e3;
+    margin-top: 10px;
 }
 
 #text-entry-content {
-    width: 600px;
+
+    background: #e3e3e3;
+    margin-left: 5px;
+    margin-right: 20px;
+    font-size: 120%; 
+    padding: 3px;
+    width: 780px;
+    border: 0;
+    position: relative;
+    z-index: 99;
 }
 
-.text-entry-spacer {
-    height: 5em;
+#text-entry-content:focus {
+    outline: none;
 }
+
+
+#send-message {float: right; margin-right: 10px;
+    margin-top: 10px;}
 
 .edit {
     background: url(/images/page_white_edit.png) no-repeat;
@@ -179,40 +200,12 @@ h3#room-users {
     background:#d0dafd;
 }
 
-@media screen and (max-device-width: 480px) {
-  
-#chatlog {width: 100%;}
-  #content {
-    positon: relative;
-  }
-
-  #text-entry {
-      position: absolute;
-  }
-
- #text-entry-content {
-     width: 90%;
-     padding-left: 5%;
-     padding-left: 5%;
-  }
-
-  #sidebar {
-      width: 90%;
-      padding-left: 5%;
-      padding-right: 5%;
-  }
-
-  #sidebar h2, #sidebar h3 {
-      display: inline;
-  }
-  
-  #sidebar hr, .uploads, .user-stuff {
-      display: none;
-  }
-
-  #sidebar input#leave {
-      float: right;
-      margin-top: -40px; 
-    }
+.superfluous-surrounding {
+    margin-bottom: 20px;
+    min-width: 550px;
+    margin-left: 20px;
+    width: 800px;
+    padding: 10px;
+    padding-top: 0;
+    background: url(/images/eightysixpercent.png)
 }
-
