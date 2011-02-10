@@ -1,5 +1,10 @@
 var chat = function() {
 
+    // Didn't know where to put this, so it goes up top
+
+    $("#text-entry-content").focus();
+    
+
     // private
     var KEY_TAB = 9;
 
