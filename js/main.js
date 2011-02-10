@@ -20,7 +20,7 @@ var chat = function() {
     var $msg_template;
     var $text_entry_content;
 
-    var idleTime = 120000; // 2 minutes
+    var idleTime = 12000; // .2 minutes
     var isIdle = false;
     var missedMessageCount = 0; // incremented when idle
 
@@ -173,9 +173,13 @@ var chat = function() {
                     
                     if ( isIdle )
                     {
-                        $.sound.play( '/sounds/message.wav' )
-                        ++missedMessageCount;
-                        document.title = '(' + missedMessageCount + ') ' + pristineTitle;
+                      soundManager.createSound({
+                        id:'message_alert',
+                        url:'/sounds/message.mp3'
+                      });
+                      soundManager.play('message_alert');
+                      ++missedMessageCount;
+                      document.title = '(' + missedMessageCount + ') ' + pristineTitle;
                     }
                     
                 });
@@ -285,6 +289,8 @@ var chat = function() {
         uploader.bind('FilesAdded', function (up, files) {
             if (up.state != 2 && files.length > 0) up.start();
         });
+        
+
 
         // apply jquery hooks and behaviors
         $('#room-topic').editable('/api/room/' + room.key + '/topic', {
