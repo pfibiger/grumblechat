@@ -20,7 +20,7 @@ var chat = function() {
     var $msg_template;
     var $text_entry_content;
 
-    var idleTime = 12000; // .2 minutes
+    var idleTime = 60000; // 1 minute
     var isIdle = false;
     var missedMessageCount = 0; // incremented when idle
 
@@ -180,6 +180,7 @@ var chat = function() {
                       soundManager.play('message_alert');
                       ++missedMessageCount;
                       document.title = '(' + missedMessageCount + ') ' + pristineTitle;
+                      jQuery.favicon('/images/grumblechat-activity.png');
                     }
                     
                 });
@@ -263,6 +264,7 @@ var chat = function() {
         isIdle = false;
         missedMessageCount = 0;
         document.title = pristineTitle;
+        jQuery.favicon('/images/grumblechat.png');
     }
 
     function initialize(the_room, the_account, upload_url, message_last_key) {
