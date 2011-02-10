@@ -228,6 +228,7 @@ var inlinePlayer = null;
 
 soundManager.debugMode = false; // disable or enable debug output
 soundManager.useFlashBlock = true;
+soundManager.defaultOptions.volume = 33;
 soundManager.url = '/js/soundmanager-swf/';
 
 // optional: enable MPEG-4/AAC support (requires flash 9)
