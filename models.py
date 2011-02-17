@@ -1,8 +1,9 @@
 from google.appengine.ext import db
+from google.appengine.ext import blobstore
 from datetime import datetime
 
 
-__all__ = ['Account', 'Room', 'Room_visibility_names', 'Room_visibility_codes', 'RoomList', 'Message_event_names', 'Message_event_codes', 'Message']
+__all__ = ['Account', 'Room', 'Room_visibility_names', 'Room_visibility_codes', 'RoomList', 'Message_event_names', 'Message_event_codes', 'Message', 'FileInfo']
 
 
 class Account(db.Model):
@@ -53,3 +54,10 @@ class Message(db.Model):
     event = db.IntegerProperty(required=True, choices=Message_event_codes.values())
     content = db.TextProperty()
     extra = db.StringProperty()
+    
+class FileInfo(db.Model):
+    blob = blobstore.BlobReferenceProperty(required=True)
+    uploaded_by = db.UserProperty(required=True)
+    uploaded_at = db.DateTimeProperty(required=True, auto_now_add=True)
+    filename = db.StringProperty(required=True)
+  

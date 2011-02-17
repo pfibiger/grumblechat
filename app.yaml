@@ -21,12 +21,12 @@ handlers:
   script: room.py
   login: required
   
-- url: /room/[^/]+/upload/[^/]+/success
+- url: /room/[^/]+/upload/[^/]+/[^/]+/success
   script: room.py
   login: required
 
 
-- url: /room/[^/]+/download/[^/]*
+- url: /room/[^/]+/download/[^/]+/[^/]*
   script: room.py
   login: required
 

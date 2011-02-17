@@ -115,23 +115,25 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         account = get_account()
         room = Room.get_by_key_name(room_slug)
         blob_key = str(blob_info.key())
-        content = '%s/room/%s/download/%s' % (self.request.application_url, room_slug, blob_key)
+        file = FileInfo(blob=blob_info.key(), uploaded_by=users.get_current_user(), filename=blob_info.filename)
+        file.put()
+        content = '%s/room/%s/download/%s/%s' % (self.request.application_url, room_slug, file.key().id(), file.filename)
         message = Message(sender=account, room=room, timestamp=timestamp,
                           event=Message_event_codes['upload'], content=content, extra=blob_key)
         message.put()
-        self.redirect('/room/%s/upload/%s/success' % (room_slug, blob_info.key()))
+        self.redirect('/room/%s/upload/%s/%s/success' % (room_slug, file.key().id(), file.filename))
 
 class UploadSuccessHandler(webapp.RequestHandler):
-    def get(self, room_slug, file_id):
+    def get(self, room_slug, file_id, file_name):
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write('%s/room/%s/download/%s' % (self.request.host_url, room_slug, file_id))
+        self.response.out.write('%s/room/%s/download/%s/%s' % (self.request.host_url, room_slug, file_id, file_name))
 
 
 class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
-    def get(self, room_slug, resource):
-        resource = str(urllib.unquote(resource))
-        blob_info = blobstore.BlobInfo.get(resource)
-        self.send_blob(blob_info, save_as=blob_info.filename)
+    def get(self, room_slug, file_id, file_name):
+        file = FileInfo.get_by_id(int(file_id))
+        blob_info = file.blob
+        self.send_blob(blob_info, save_as=False)
 
 
 
@@ -139,8 +141,8 @@ application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
                                       (r'/room/([^/]+)', RoomHandler),
                                       (r'/room/([^/]+)/leave', LeaveHandler),
                                       (r'/room/([^/]+)/upload', UploadHandler),
-                                      (r'/room/([^/]+)/upload/([^/]+)/success', UploadSuccessHandler),
-                                      (r'/room/([^/]+)/download/([^/]+)', DownloadHandler)],
+                                      (r'/room/([^/]+)/upload/([^/]+)/([^/]+)/success', UploadSuccessHandler),
+                                      (r'/room/([^/]+)/download/([^/]+)/([^/]+)', DownloadHandler)],
                                      debug=True)
 
 def main():
