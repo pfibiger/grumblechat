@@ -11,6 +11,7 @@ a {color: #3087e0;}
     height: 100%;
     position: fixed;
     width: 100%;
+    z-index: -1;
 }
 
 #chatlog {
