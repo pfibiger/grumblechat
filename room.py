@@ -137,7 +137,7 @@ class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
           self.send_blob(blob_info, save_as=False)
         else:
           self.error(404)
-          self.response.out.write(file_name + " does not equal " + file.filename)
+          self.response.out.write("404 File Not Found")
 
 
 application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
