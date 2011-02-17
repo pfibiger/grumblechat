@@ -6,7 +6,12 @@ body {
 
 a {color: #3087e0;}
 
-
+.superfluous-glow {
+    background: url(/images/glowlarge.png) no-repeat top center;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+}
 
 #chatlog {
     width: 100%;

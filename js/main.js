@@ -282,6 +282,8 @@ var chat = function() {
         $text_entry_content = $('#text-entry-content');
         
         // initialize file uploader
+        // need to port the blobstore changes to modern plupload, then we won't have to specify
+        // allowed file types
         var uploader = new plupload.Uploader({
             runtimes: 'gears,html5,flash,html4',
             browse_button: 'pickfiles',
@@ -291,6 +293,11 @@ var chat = function() {
             multipart: true,
             flash_swf_url: '/js/plupload/plupload.flash.swf',
             multi_selection: false,
+            filters : [
+              {title : "Image files", extensions : "jpg,gif,png,jpeg,tiff,bmp"},
+              {title : "Other files", extensions : "zip,html,pdf,doc,docx,xls,ppt,pages,mpg,avi,m4v,mov,wmv,exe,url"},
+              {title : "More files", extensions : "epub,mobi,lit,ps,psd,xml,py,pl,php,java,jar,wav,mp3,ogg,aac,dmg"}
+            ],
         });
         uploader.init();
         uploader.bind('FilesAdded', function (up, files) {

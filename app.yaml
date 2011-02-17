@@ -16,6 +16,10 @@ handlers:
 - url: /room/[^/]+/leave
   script: room.py
   login: required
+  
+- url: /room/[^/]+/archive
+  script: room.py
+  login: required
 
 - url: /room/[^/]+/upload
   script: room.py
