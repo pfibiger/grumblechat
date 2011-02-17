@@ -133,8 +133,11 @@ class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, room_slug, file_id, file_name):
         file = FileInfo.get_by_id(int(file_id))
         blob_info = file.blob
-        self.send_blob(blob_info, save_as=False)
-
+        if (urllib.unquote(file_name) == file.filename):
+          self.send_blob(blob_info, save_as=False)
+        else:
+          self.error(404)
+          self.response.out.write(file_name + " does not equal " + file.filename)
 
 
 application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
