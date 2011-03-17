@@ -43,6 +43,8 @@ a {color: #3087e0;}
     width: 100%;
     border: 1px solid #f0f0f0;
     border-right: 0;
+    max-width: 600px;
+    word-wrap:break-word;
 }
 
 .msg-content p {
