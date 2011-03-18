@@ -6,17 +6,16 @@
     <h2>Rooms</h2>
     {% for room in rooms %}
 	<span>
-    <table id="rounded-corner">
+    <table class="roomtable">
       <thead>
 	    <tr>
-          <th scope="col" class="rounded-roomname"><a href="/room/{{ room.key.name }}">{{ room.name }}</a></th>
-          <th scope="col" class="rounded-topic">{{ room.topic }}</th>
+          <th scope="col" class="roomname"><a href="/room/{{ room.key.name }}">{{ room.name }}</a></th>
+          <th scope="col" class="topic">{{ room.topic }}</th>
 		</tr>
 	  </thead>
 	  <tfoot>
 	  <tr>
-	  <td colspan="1" class="rounded-foot-left">Last Activity: </td>
-	  <td class="rounded-foot-right">&nbsp;</td>
+	  <td colspan="2">Last Activity: </td>
 	  </tr>
 	  </tfoot>
 	  <tr class="roomusers">

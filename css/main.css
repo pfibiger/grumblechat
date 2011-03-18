@@ -166,7 +166,7 @@ h3#room-users {
     padding-left: 20px;
 }
 
-#rounded-corner {
+.roomtable {
     font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     font-size:12px;
     width:300px;
@@ -174,33 +174,19 @@ h3#room-users {
     border-collapse:collapse;
     margin:20px;
 }
-#rounded-corner thead th.rounded-roomname {
-    background:#b9c9fe url("/images/left.png") left -1px no-repeat;
-}
-#rounded-corner thead th.rounded-topic {
-    background:#b9c9fe url("/images/right.png") right -1px no-repeat;
-}
-#rounded-corner th {
+
+.roomtable th{
     font-weight:normal;
     font-size:13px;
-    color:#039;
-    background:#b9c9fe;
+    color:#000;
+    background:#fff;
     padding:8px;
 }
-#rounded-corner td{ 
-    background:#e8edff;
+.roomtable td{ 
+    background:#bbbbbb;
     border-top:1px solid #fff;
-    color:#669;
+    color:#000;
     padding:8px;
-}
-#rounded-corner tfoot td.rounded-foot-left {
-    background:#e8edff url("/images/botleft.png") left bottom no-repeat;
-}
-#rounded-corner tfoot td.rounded-foot-right {
-    background:#e8edff url("/images/botright.png") right bottom no-repeat;
-}
-#rounded-corner tbody tr:hover td {
-    background:#d0dafd;
 }
 
 .superfluous-surrounding {
