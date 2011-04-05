@@ -15,7 +15,7 @@
         <h3 id="room-users">Users:</h3>
         <table id="userlist">
           {% for roomlisting in roomlist %}
-          <tr id="user-{{ roomlisting.account.nickname }}">
+          <tr id="user-{{ roomlisting.account.key.id }}">
             <td>{{ roomlisting.account.gravatar_tag }}
             {{ roomlisting.account.nickname }}</td>
           </tr>
@@ -63,6 +63,6 @@
 
 {% block script %}
 the_room = { key: '{{ room.key.name }}', name: '{{ room.name }}' };
-the_account = { nickname: '{{ account.nickname }}' };
+the_account = { nickname: '{{ account.nickname }}', id: '{{ account.key.id }}' };
 chat.initialize(the_room, the_account, '{{ upload_url }}','{{ message_last_key }}');
 {% endblock %}

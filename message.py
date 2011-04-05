@@ -137,6 +137,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                         'content' : message.content, 
                         'sender' : sender_url,
                         'sender_name' : message.sender.nickname,
+                        'sender_id' : message.sender.key().id(),
                         'room' : room_url,
                         'event' : Message_event_names[message.event],
                         'extra' : message.extra,

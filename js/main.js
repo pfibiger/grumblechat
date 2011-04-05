@@ -112,8 +112,8 @@ var chat = function() {
         function success(data) {
             do_polling = true;
             message = $.parseJSON(data);
-            var $new_id = "message-" + account.nickname + "-" + message.id;
-            $msg_new.attr("id",$new_id);
+            var new_id = "message-" + message.id;
+            $msg_new.attr("id", new_id);
         }
 
         function error() {
@@ -122,7 +122,8 @@ var chat = function() {
         }
 
         $msg_new = createMessage(new Date(), account.nickname, msg);
-        $msg_new.attr("id","message-temp-local");
+        // actual id is irrelevant (success handler refs it by closure), just make it unique
+        $msg_new.attr("id","message-temp-local-" + (new Date()).getTime());
         $msg_template.before($msg_new);
         scrollToBottom();
         var post_url = '/api/room/' + room.key + '/msg/';
@@ -149,13 +150,13 @@ var chat = function() {
                         document.title = pristineTitle;
                         break;
                     case 'part':
-                        var $removeuser = 'user-' + message.sender_name;
+                        var $removeuser = 'user-' + message.sender_id;
                         $("#" + $removeuser).remove();
                         break;
                     case 'join':
-                        var $adduser = 'user-' + message.sender_name;
+                        var $adduser = 'user-' + message.sender_id;
                         if ($("#" + $adduser).length == 0){
-                            $tablerow_toinsert = '<tr id="user-' + message.sender_name + '"><td>' +  message.extra + ' ' + message.sender_name + '</td></tr>';
+                            $tablerow_toinsert = '<tr id="user-' + message.sender_id + '"><td>' +  message.extra + ' ' + message.sender_name + '</td></tr>';
                             $('#userlist tr:last').after($tablerow_toinsert);
                         }
                         break;
@@ -163,8 +164,8 @@ var chat = function() {
                         break;
                     }
                     //always do 'message' type
-                    var $match_id = "message-" + message.sender_name + "-" + message.id;
-                    var $found_message = $('#' + $match_id);
+                    var target_id = "message-" + message.id;
+                    var $found_message = $('#' + target_id);
                     if ($found_message.length != 0) {
                         // for now, lets update the content (until we do it in js)
                         $found_message.find('.msg-content').html(message.content);
@@ -172,6 +173,7 @@ var chat = function() {
                     else {
                         var $msg_new = createMessage(parseDate(message.timestamp),
                                                      message.sender_name, message.content);
+                        $msg_new.attr("id", target_id);
                         $msg_new.addClass('event-' + message.event);
                         $msg_template.before($msg_new);
                     }
