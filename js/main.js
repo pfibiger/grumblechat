@@ -27,7 +27,8 @@ var chat = function() {
 
     var idleTime = 60000; // 1 minute
     var isIdle = false;
-    var missedMessageCount = 0; // incremented when idle
+    var isFocused = true;
+    var missedMessageCount = 0; // incremented when unfocused
 
     function textEntrySubmit() {
         var msg = $text_entry_content.val();
@@ -178,7 +179,7 @@ var chat = function() {
                         $msg_template.before($msg_new);
                     }
                     
-                    if ( isIdle )
+                    if ( !isFocused )
                     {
                       soundManager.createSound({
                         id:'message_alert',
@@ -269,9 +270,19 @@ var chat = function() {
     {
         //sendMessage( );
         isIdle = false;
+    }
+
+    function OnFocus()
+    {
+        isFocused = true;
         missedMessageCount = 0;
         document.title = pristineTitle;
         jQuery.favicon('/images/grumblechat.png');
+    }
+
+    function OnUnfocus()
+    {
+        isFocused = false;
     }
 
     function initialize(the_room, the_account, upload_url, message_last_key) {
@@ -330,6 +341,10 @@ var chat = function() {
         $(document).bind( "idle.idleTimer", OnIdle );
         $(document).bind( "active.idleTimer", OnUnidle );
         $.idleTimer( idleTime );
+
+	// set up the notification timer
+	$(document).bind( "focus",OnFocus );
+	$(document).bind( "blur",OnUnfocus );
 
         // start the update loop rolling
         setTimeout(updateChat);    
