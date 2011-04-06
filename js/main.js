@@ -25,7 +25,6 @@ var chat = function() {
     var $msg_template;
     var $text_entry_content;
 
-    var idleTime = 60000; // 1 minute
     var isIdle = false;
     var missedMessageCount = 0; // incremented when idle
 
@@ -327,9 +326,8 @@ var chat = function() {
         $('#text-entry-content').focus();
 
         // set up idle timer
-        $(document).bind( "idle.idleTimer", OnIdle );
-        $(document).bind( "active.idleTimer", OnUnidle );
-        $.idleTimer( idleTime );
+        $(document).bind( "blur", OnIdle );
+        $(document).bind( "focus", OnUnidle );
 
         // start the update loop rolling
         setTimeout(updateChat);    
