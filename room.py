@@ -117,6 +117,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         blob_key = str(blob_info.key())
         file = FileInfo(blob=blob_info.key(), uploaded_by=users.get_current_user(), filename=blob_info.filename)
         file.put()
+        file.filename = file.filename.replace(' ', '%20')
         content = '%s/room/%s/download/%s/%s' % (self.request.application_url, room_slug, file.key().id(), file.filename)
         message = Message(sender=account, room=room, timestamp=timestamp,
                           event=Message_event_codes['upload'], content=content, extra=blob_key)
@@ -126,6 +127,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 class UploadSuccessHandler(webapp.RequestHandler):
     def get(self, room_slug, file_id, file_name):
         self.response.headers['Content-Type'] = 'text/plain'
+        file_name = file_name.replace(' ', '%20')
         self.response.out.write('%s/room/%s/download/%s/%s' % (self.request.host_url, room_slug, file_id, file_name))
 
 
