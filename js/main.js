@@ -42,7 +42,9 @@ var chat = function() {
 
     function textEntryKeydown(event) {
         if (event.which == KEY_TAB) {
-            var userlist = $('#userlist tr').map(function(){return this.id.substr(5)});
+            var userlist = $('#userlist tr td').map(
+                function(){return this.textContent.replace(/^\s+|\s+$/g,"")}
+            );
             autocompleteUsername($(event.target), userlist);
             return false;
         }
