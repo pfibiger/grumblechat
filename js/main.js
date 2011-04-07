@@ -27,7 +27,7 @@ var chat = function() {
 
     var idleTime = 60000; // 1 minute
     var isIdle = false;
-    var isFocused = true;
+    var isBlurred = false;
     var missedMessageCount = 0; // incremented when unfocused
 
     function textEntrySubmit() {
@@ -181,16 +181,9 @@ var chat = function() {
                         $msg_template.before($msg_new);
                     }
                     
-                    if ( !isFocused )
-                    {
-                      soundManager.createSound({
-                        id:'message_alert',
-                        url:'/sounds/message.mp3'
-                      });
-                      soundManager.play('message_alert');
-                      ++missedMessageCount;
-                      document.title = '(' + missedMessageCount + ') ' + pristineTitle;
-                      jQuery.favicon('/images/grumblechat-activity.png');
+                    // notification for messages from others on idle/unfocused
+                    if (message.sender_id != account.id && (isIdle || isBlurred)) {
+                        notifyMissedMessage();
                     }
                     
                 });
@@ -262,29 +255,39 @@ var chat = function() {
         return candidates[0].slice(0, index);
     }
     
-    function OnIdle()
+    function setIdle()
     {
-        //sendMessage( );
         isIdle = true;
+        // TODO implement "away" status and notify the other people in the room
     }
     
-    function OnUnidle()
+    function setBlurred()
     {
-        //sendMessage( );
-        isIdle = false;
+        isBlurred = true;
     }
 
-    function OnFocus()
+    function setActive()
     {
-        isFocused = true;
+        // abort unless actually inactive, to prevent double-trigger on focus-when-idle
+        if (!(isIdle || isBlurred)) return;
+
+        isIdle = isBlurred = false;
+        // reset idleTimer too -- it doesn't detect window focus
+        $.idleTimer(idleTime);
         missedMessageCount = 0;
         document.title = pristineTitle;
         jQuery.favicon('/images/grumblechat.png');
     }
 
-    function OnUnfocus()
-    {
-        isFocused = false;
+    function notifyMissedMessage() {
+        soundManager.createSound({
+            id:'message_alert',
+            url:'/sounds/message.mp3'
+        });
+        soundManager.play('message_alert');
+        ++missedMessageCount;
+        document.title = '(' + missedMessageCount + ') ' + pristineTitle;
+        jQuery.favicon('/images/grumblechat-activity.png');
     }
 
     function initialize(the_room, the_account, upload_url, message_last_key) {
@@ -339,14 +342,12 @@ var chat = function() {
         scrollToBottom();
         $('#text-entry-content').focus();
 
-        // set up idle timer
-        $(document).bind( "idle.idleTimer", OnIdle );
-        $(document).bind( "active.idleTimer", OnUnidle );
-        $.idleTimer( idleTime );
-
-	// set up the notification timer
-	$(window).bind( "focus",OnFocus );
-	$(window).bind( "blur",OnUnfocus );
+        // set up handlers to manage away state and desktop notifications
+        $(document).bind("idle.idleTimer", setIdle);
+        $(document).bind("active.idleTimer", setActive);
+        $.idleTimer(idleTime);
+        $(window).bind("blur", setBlurred);
+        $(window).bind("focus", setActive);
 
         // start the update loop rolling
         setTimeout(updateChat);    
