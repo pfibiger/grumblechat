@@ -88,6 +88,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
             roomlist = RoomList.all().filter('account =', account).filter('room =', room).get()
             roomlist.update_presence()
             since_message_key = self.request.get('since')
+            before_message_id = self.request.get('before')
             date_start = self.request.get('start')
             date_end = self.request.get('end')
             query_terms = self.request.get('q')
@@ -102,10 +103,14 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 messages = [m for m in messages.filter('timestamp >', since_message.timestamp)]
                 if messages:
                     next_url = 'room/%s/msg/?since=%s' % (room.key().name(), messages[-1].key())
-
                 roomlist.status = self.request.get( 'status' )
                 roomlist.status_start_time = self.request.get( 'status_start_time' )
-
+            elif before_message_id != '':
+                # restrict by older than message (specified by id)
+                before_message = Message.get_by_id(int(before_message_id))
+                messages = Message.all().filter('room =', room)
+                messages = messages.filter('timestamp <', before_message.timestamp).order('-timestamp')
+                messages = reversed(messages.fetch(5))
             elif date_start != '' and date_end != '':
                 # restrict by starting/ending datetime
                 iso8601_format = '%Y-%m-%dT%H:%M:%S'

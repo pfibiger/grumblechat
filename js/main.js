@@ -13,6 +13,7 @@ var chat = function() {
     var update_interval_error = 1000 * 10;
     var update_interval = update_interval_min;
     var message_display_max = 70;
+    var scrollback_enabled = true;
     var timestamp_display_format = 'g:i&\\n\\b\\s\\p;A';
     var timestamp_iso8601_format = 'Y-m-d\TH:i:s';
     var do_polling = true;
@@ -212,6 +213,44 @@ var chat = function() {
         });
     }
 
+    function onScroll() {
+        if ($(window).scrollTop() == 0 && scrollback_enabled) {
+            function success(data) {
+                if (data.messages) {
+                    var messages = [];
+                    $.each(data.messages, function (index, message) {
+                        var $msg_new = createMessage(parseDate(message.timestamp),
+                                                     message.sender_name, message.content);
+                        $msg_new.attr("id", 'message-' + message.id);
+                        $msg_new.addClass('event-' + message.event);
+                        messages.push($msg_new[0]);
+                    });
+                    $oldest_msg.before(messages);
+                    $(window).scrollTop($oldest_msg.offset().top);
+                    message_display_max += messages.length;
+                }
+                scrollback_enabled = true;
+            }
+
+            function error(request, status, error) {
+                scrollback_enabled = true;
+                // FIXME: display a transient/popup/ribbon message
+            }
+
+            // disable while we wait for the ajax response to avoid triggering a flood
+            scrollback_enabled = false;
+            var $oldest_msg = $chatlog.find('.message:first');
+            // pull number out of id formatted like "msg-123" (FIXME: not RESTful)
+            var msg_id = $oldest_msg[0].id.match(/-(\d+)/)[1]
+            $.ajax({
+                url: '/api/room/' + room.key + '/msg/?before=' + msg_id,
+                dataType: 'json',
+                success: success,
+                error: error,
+            })
+        }
+    }
+
     function parseDate(str) {
         /* From http://anentropic.wordpress.com/2009/06/25/javascript-iso8601-parser-and-pretty-dates/
         Parses an ISO8601-formated date in UTC, i.e. yyyy-mm-ddThh:mm:ss.ssssss . */
@@ -348,6 +387,9 @@ var chat = function() {
         $.idleTimer(idleTime);
         $(window).bind("blur", setBlurred);
         $(window).bind("focus", setActive);
+
+        // handler for history autoload on scroll-to-top
+        $(window).scroll(onScroll);
 
         // start the update loop rolling
         setTimeout(updateChat);    
