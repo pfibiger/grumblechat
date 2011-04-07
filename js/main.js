@@ -345,8 +345,8 @@ var chat = function() {
         $.idleTimer( idleTime );
 
 	// set up the notification timer
-	$(document).bind( "focus",OnFocus );
-	$(document).bind( "blur",OnUnfocus );
+	$(window).bind( "focus",OnFocus );
+	$(window).bind( "blur",OnUnfocus );
 
         // start the update loop rolling
         setTimeout(updateChat);    
