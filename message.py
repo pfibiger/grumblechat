@@ -110,7 +110,7 @@ class APIMessageCollectionHandler(webapp.RequestHandler):
                 before_message = Message.get_by_id(int(before_message_id))
                 messages = Message.all().filter('room =', room)
                 messages = messages.filter('timestamp <', before_message.timestamp).order('-timestamp')
-                messages = reversed(messages.fetch(5))
+                messages = reversed(messages.fetch(70))
             elif date_start != '' and date_end != '':
                 # restrict by starting/ending datetime
                 iso8601_format = '%Y-%m-%dT%H:%M:%S'
