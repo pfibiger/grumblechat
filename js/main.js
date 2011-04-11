@@ -314,6 +314,9 @@ var chat = function() {
         // reset idleTimer too -- it doesn't detect window focus
         $.idleTimer(idleTime);
         missedMessageCount = 0;
+	if (window.fluid) {
+		window.fluid.dockBadge = '';
+	}
         document.title = pristineTitle;
         jQuery.favicon('/images/grumblechat.png');
     }
@@ -325,6 +328,9 @@ var chat = function() {
         });
         soundManager.play('message_alert');
         ++missedMessageCount;
+	if (window.fluid) {
+		window.fluid.dockBadge = missedMessageCount;
+	}
         document.title = '(' + missedMessageCount + ') ' + pristineTitle;
         jQuery.favicon('/images/grumblechat-activity.png');
     }
