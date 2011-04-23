@@ -1,8 +1,9 @@
 /*!
  * jQuery idleTimer plugin
- * version 0.9.100511
+ * version 0.9.100511+gc
  * by Paul Irish. 
- *   http://github.com/paulirish/yui-misc/tree/
+ *   http://github.com/paulirish/jquery-idletimer
+ * plus local modifications for Grumblechat
  * MIT license
  
  * adapted from YUI idle timer by nzakas:
@@ -193,6 +194,14 @@ $.idleTimer = function(newTimeout, elem){
     } else if (newTimeout === 'destroy') {
         stop(elem);
         return this;  
+    } else if (newTimeout === 'reset') {
+        // start timer over, with original idle/enabled/timeout values -JLM
+        // FIXME seems to duplicate a lot, could be refactored
+        clearTimeout(obj.tId);
+        obj.idle    = idle;
+        obj.enabled = enabled;
+        obj.tId = setTimeout(toggleIdleState, obj.timeout);
+        return;
     } else if (newTimeout === 'getElapsedTime'){
         return (+new Date) - obj.olddate;
     }

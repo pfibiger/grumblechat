@@ -183,7 +183,7 @@ var chat = function() {
                     }
                     
                     // notification for messages from others on idle/unfocused
-                    if (message.sender_id != account.id && (isIdle || isBlurred)) {
+                    if (message.sender_id != account.id && !isPresent()) {
                         notifyMissedMessage();
                     }
                     
@@ -294,31 +294,46 @@ var chat = function() {
         return candidates[0].slice(0, index);
     }
     
-    function setIdle()
+    function onIdle()
     {
         isIdle = true;
         // TODO implement "away" status and notify the other people in the room
     }
     
-    function setBlurred()
+    function onActive()
+    {
+        setPresent();
+    }
+
+    function onBlur()
     {
         isBlurred = true;
     }
 
-    function setActive()
+    function onFocus()
+    {
+        setPresent();
+        // reset idleTimer too -- it doesn't detect window focus
+        $.idleTimer('reset');
+    }
+
+    function setPresent()
     {
         // abort unless actually inactive, to prevent double-trigger on focus-when-idle
-        if (!(isIdle || isBlurred)) return;
+        if (isPresent()) return;
 
         isIdle = isBlurred = false;
-        // reset idleTimer too -- it doesn't detect window focus
-        $.idleTimer(idleTime);
         missedMessageCount = 0;
 	if (window.fluid) {
 		window.fluid.dockBadge = '';
 	}
         document.title = pristineTitle;
         jQuery.favicon('/images/grumblechat.png');
+    }
+
+    function isPresent()
+    {
+        return !( isIdle || isBlurred );
     }
 
     function notifyMissedMessage() {
@@ -388,11 +403,11 @@ var chat = function() {
         $('#text-entry-content').focus();
 
         // set up handlers to manage away state and desktop notifications
-        $(document).bind("idle.idleTimer", setIdle);
-        $(document).bind("active.idleTimer", setActive);
+        $(document).bind("idle.idleTimer", onIdle);
+        $(document).bind("active.idleTimer", onActive);
         $.idleTimer(idleTime);
-        $(window).bind("blur", setBlurred);
-        $(window).bind("focus", setActive);
+        $(window).bind("blur", onBlur);
+        $(window).bind("focus", onFocus);
 
         // handler for history autoload on scroll-to-top
         $(window).scroll(onScroll);
