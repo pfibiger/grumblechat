@@ -31,6 +31,7 @@
  * THE SOFTWARE.
  */
 
+/* updated to fix Chrome setTimeout issue by Zaid Zawaideh */
 
  // API available in <= v0.8
  /*******************************
@@ -109,7 +110,17 @@ $.idleTimer = function(newTimeout, elem){
         obj.idle = !obj.idle;
         
         // reset timeout counter
+        var elapsed = (+new Date) - obj.olddate;
         obj.olddate = +new Date;
+
+        // handle Chrome always triggering idle after js alert or comfirm popup
+        if (obj.idle && (elapsed < timeout)) {
+                obj.idle = false;
+                clearTimeout($.idleTimer.tId);
+                if (enabled)
+                  $.idleTimer.tId = setTimeout(toggleIdleState, timeout);
+                return;
+        }
         
         //fire appropriate event
         
