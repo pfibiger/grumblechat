@@ -188,7 +188,11 @@ var chat = function() {
                     }
                     
                 });
-                scrollToBottom();
+                // make sure the user's not reading scrollback.
+                // only scroll down to the bottom if they're currently in the bottom 10% of the page.
+                if (($(document).height() - $(window).height() -$(window).scrollTop()) < ($(document).height() * .2)) {
+                    scrollToBottom();
+                }
                 url_message_next = data.next;
                 update_interval = update_interval_min;
             } else {
