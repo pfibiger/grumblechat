@@ -2,7 +2,7 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
-from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext.webapp.util import run_wsgi_app, login_required
 
 from models import *
 from utils import *
@@ -10,6 +10,7 @@ from utils import *
 
 class AccountCollectionHandler(webapp.RequestHandler):
 
+    @login_required
     def get(self):
         #user = users.get_current_user()
         #account = Account.all().filter('user =', user).get()
@@ -30,14 +31,13 @@ class AccountCollectionHandler(webapp.RequestHandler):
                                                     {'error_msg': 'Please enter a nickname.'}
                                                     ))
         else:
-            account = Account(user=user, nickname=nickname)
-            account.gravatar_tag = gravatar(user.email())
-            account.put()
+            account = create_account(user, nickname)
             self.redirect('/account/' + str(account.key()))
             
 
 class AccountHandler(webapp.RequestHandler):
 
+    @login_required
     def get(self, account_key):
         account = Account.all().filter('__key__ =', Key(account_key)).get()
         if not account:

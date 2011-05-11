@@ -61,9 +61,28 @@ def slugify(title):
     return slug
 
 
+def create_account(user, nickname):
+    if user is None:
+        raise RuntimeError('user is not logged in')
+    if len(nickname) == 0:
+        raise RuntimeError('nickname is empty')
+    account = Account(user=user, nickname=nickname)
+    account.gravatar_tag = gravatar(user.email())
+    account.put()
+    return account
+
+
 def get_account():
     user = users.get_current_user()
+    if user is None:
+        raise RuntimeError('user is not logged in')
     account = Account.all().filter('user =', user).get()
+    if account is None:
+        # automatically create account, using the username part of the user's email address as the
+        # initial nickname
+        matches = re.match(r'([^@]+)', user.email())
+        nickname = matches.groups(0)[0]
+        account = create_account(user, nickname)
     return account
     
 def transform_message(message):

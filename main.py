@@ -2,11 +2,13 @@ import wsgiref.handlers
 
 
 from google.appengine.ext import webapp
+from google.appengine.ext.webapp.util import login_required
 from utils import *
 
 
 class MainHandler(webapp.RequestHandler):
 
+  @login_required
   def get(self):
     account = get_account()
     if (account):

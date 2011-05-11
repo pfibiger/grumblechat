@@ -2,7 +2,7 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
-from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext.webapp.util import run_wsgi_app, login_required
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 from datetime import datetime
@@ -15,6 +15,7 @@ import re
 
 class RoomCollectionHandler(webapp.RequestHandler):
 
+    @login_required
     def get(self):
         rooms = Room.all().filter('visibility =', Room_visibility_codes['public']).order('name')
         roomlist = RoomList.all()
@@ -49,6 +50,7 @@ class RoomCollectionHandler(webapp.RequestHandler):
 
 class RoomHandler(webapp.RequestHandler):
 
+    @login_required
     def get(self, room_slug):
         room = Room.get_by_key_name(room_slug)
         if not room:
