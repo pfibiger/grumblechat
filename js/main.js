@@ -342,7 +342,6 @@ var chat = function() {
 
     function notifyMissedMessage() {
         if (account.use_sound == "True") {
-            alert(account.use_sound)
             soundManager.createSound({
                 id:'message_alert',
                 url:'/sounds/message.mp3'
