@@ -63,6 +63,6 @@
 
 {% block script %}
 the_room = { key: '{{ room.key.name }}', name: '{{ room.name }}' };
-the_account = { nickname: '{{ account.nickname|safe }}', id: '{{ account.key.id }}' };
+the_account = { nickname: '{{ account.nickname|safe }}', id: '{{ account.key.id }}', use_sound: '{{ account.use_sound}}' };
 chat.initialize(the_room, the_account, '{{ upload_url }}','{{ message_last_key }}');
 {% endblock %}

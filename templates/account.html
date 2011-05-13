@@ -6,6 +6,7 @@
       <tr><th>Gravatar</th><td>{{ account.gravatar_tag|safe }}</td></tr>
       <tr><th>Account</th><td>{{ account.user.email }}</td></tr>
       <tr><th>Nickname</th><td>{{ account.nickname }}</td></tr>
+      <tr><th>Use Sound?</th><td><input type="checkbox" name="use_sound" disabled="disabled" {% if account.use_sound %} checked {% endif %} /></td></tr>
     </table>
     <p><a href="/account/{{ account.key }}/edit">Edit settings</a></p>
     

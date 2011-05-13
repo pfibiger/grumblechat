@@ -14,7 +14,8 @@ class Account(db.Model):
     user = db.UserProperty(required=True)
     nickname = db.StringProperty(required=True)
     url = db.StringProperty(default='')
-    gravatar_tag = db.StringProperty(default='')    
+    gravatar_tag = db.StringProperty(default='')
+    use_sound = db.BooleanProperty(default=True)
 
 Room_visibility_names = {
     0: 'public',

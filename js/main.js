@@ -341,11 +341,14 @@ var chat = function() {
     }
 
     function notifyMissedMessage() {
-        soundManager.createSound({
-            id:'message_alert',
-            url:'/sounds/message.mp3'
-        });
-        soundManager.play('message_alert');
+        if (account.use_sound == "True") {
+            alert(account.use_sound)
+            soundManager.createSound({
+                id:'message_alert',
+                url:'/sounds/message.mp3'
+            });
+            soundManager.play('message_alert');
+        }
         ++missedMessageCount;
 	if (window.fluid) {
 		window.fluid.dockBadge = missedMessageCount;
