@@ -1,9 +1,13 @@
 from google.appengine.ext import db
 from google.appengine.ext import blobstore
+from google.appengine.ext.webapp import template
+from google.appengine.ext.db import djangoforms
 from datetime import datetime
 
 
-__all__ = ['Account', 'Room', 'Room_visibility_names', 'Room_visibility_codes', 'RoomList', 'Message_event_names', 'Message_event_codes', 'Message', 'FileInfo']
+__all__ = ['Account', 'Room', 'Room_visibility_names', 'Room_visibility_codes', 'RoomList',
+           'Message_event_names', 'Message_event_codes', 'Message', 'FileInfo',
+           'AccountForm']
 
 
 class Account(db.Model):
@@ -60,4 +64,9 @@ class FileInfo(db.Model):
     uploaded_by = db.UserProperty(required=True)
     uploaded_at = db.DateTimeProperty(required=True, auto_now_add=True)
     filename = db.StringProperty(required=True)
-  
+
+
+class AccountForm(djangoforms.ModelForm):
+    class Meta:
+        model = Account
+        exclude = ['user', 'gravatar_tag']

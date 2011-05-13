@@ -4,11 +4,12 @@ import re
 import markdown
 from datetime import datetime
 from google.appengine.api import users
+from google.appengine.ext.db import Key
 
 from models import *
 
 
-__all__ = ['leave_room', 'gravatar', 'slugify', 'get_account', 'transform_message']
+__all__ = ['leave_room', 'gravatar', 'slugify', 'get_account', 'account_is_current', 'transform_message']
 
 
 def leave_room(room=None, account=None, session=None):
@@ -72,18 +73,36 @@ def create_account(user, nickname):
     return account
 
 
-def get_account():
-    user = users.get_current_user()
-    if user is None:
-        raise RuntimeError('user is not logged in')
-    account = Account.all().filter('user =', user).get()
-    if account is None:
-        # automatically create account, using the username part of the user's email address as the
-        # initial nickname
-        matches = re.match(r'([^@]+)', user.email())
-        nickname = matches.groups(0)[0]
-        account = create_account(user, nickname)
+def get_account(key=None):
+    """Returns the Account object for the current user, or for a particular user specified by
+    its datastore key or key name.  If the key is not specified and no Account exists for the
+    current user, a new Account will be implicitly created.  If the key is specified but there
+    is no corresponding Account, None will be returned.
+    """
+    if key is None:
+        user = users.get_current_user()
+        if user is None:
+            raise RuntimeError('user is not logged in')
+        account = Account.all().filter('user =', user).get()
+        if account is None:
+            # automatically create account, using the username part of the user's email address as the
+            # initial nickname
+            matches = re.match(r'([^@]+)', user.email())
+            nickname = matches.groups(0)[0]
+            account = create_account(user, nickname)
+    else:
+        if not isinstance(key, Key):
+            key = Key(key)
+        account = Account.get(key)
     return account
+
+
+def account_is_current(account):
+    """Returns true if the specified account is the same as that of the current user.
+    """
+    current_account = get_account()
+    return account.key() == current_account.key()
+
     
 def transform_message(message):
     content = message.content

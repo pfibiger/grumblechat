@@ -1,3 +1,6 @@
+from google.appengine.dist import use_library
+use_library('django', '1.2')
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
@@ -153,7 +156,10 @@ application = webapp.WSGIApplication([('/room/', RoomCollectionHandler),
                                      debug=True)
 
 def main():
-    webapp.template.register_template_library('filters')
+    #import code; code.interact(local=locals())
+    #from pydbgr.api import debug; debug()
+    #import pdb; pdb.set_trace()
+    webapp.template.register_template_library('tags.filters')
     run_wsgi_app(application)
 
 if __name__ == '__main__':

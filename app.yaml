@@ -5,53 +5,21 @@ api_version: 1
 
 handlers:
 
-- url: /account/[^/]*
+- url: /account/.*
   script: account.py
   login: required
 
-- url: /room/[^/]*
-  script: room.py
-  login: required
-
-- url: /room/[^/]+/leave
-  script: room.py
-  login: required
-  
-- url: /room/[^/]+/archive
-  script: room.py
-  login: required
-
-- url: /room/[^/]+/upload
-  script: room.py
-  login: required
-  
-- url: /room/[^/]+/upload/[^/]+/[^/]+/success
-  script: room.py
-  login: required
-
-
-- url: /room/[^/]+/download/[^/]+/[^/]*
-  script: room.py
-  login: required
-
-
-- url: /room/[^/]+/msg
+- url: /room/[^/]+/(msg|topic)
   script: message.py
   login: required
 
-- url: /room/[^/]+/topic
-  script: message.py
-  login: required
-
-- url: /api/room/[^/]+/topic
+- url: /api/room/[^/]+/.+
   script: message.py
   login: required
   
-- url: /api/room/[^/]+/msg/[^/]*
-  script: message.py
-
-- url: /api/room/[^/]+/msg/
-  script: message.py
+- url: /room/.*
+  script: room.py
+  login: required
 
 - url: /tasks/.*
   script: tasks.py

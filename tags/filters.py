@@ -14,17 +14,6 @@ def get(d, key_name):
     return value
 
 ####
-# 'last' from django 1.1
-@register.filter
-def last(value):
-    "Returns the last item in a list"
-    try:
-        return value[-1]
-    except IndexError:
-        return u''
-last.is_safe = True
-
-####
 # 'assign' from http://www.djangosnippets.org/snippets/539/
 class AssignNode(Node):
     def __init__(self, name, value):

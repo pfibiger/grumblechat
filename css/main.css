@@ -189,6 +189,10 @@ h3#room-users {
     padding:8px;
 }
 
+table.account-settings {
+    width: auto;
+}
+
 .superfluous-surrounding {
     margin-bottom: 20px;
     min-width: 550px;

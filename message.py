@@ -1,3 +1,6 @@
+from google.appengine.dist import use_library
+use_library('django', '1.2')
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
@@ -14,8 +17,7 @@ from utils import *
 class MessageCollectionHandler(webapp.RequestHandler):
 
     def post(self, room_slug):
-        user = users.get_current_user()
-        sender = Account.all().filter('user =', user).get()
+        sender = get_account()
         room = Room.get_by_key_name(room_slug)
         timestamp = datetime.now()
         content = self.request.get('content')

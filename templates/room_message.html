@@ -9,6 +9,6 @@
     {% if message %}{{ message.sender.nickname }}{% endif %}
   </td>
   <td class="msg-content">
-    {% if message %}{{ message.content }}{% endif %}
+    {% if message %}{{ message.content|safe }}{% endif %}
   </td>
 </tr>

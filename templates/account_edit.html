@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <p>Edit account settings:</p>
+
+    <form action="" method="POST">
+      {% if error_msg %}
+        <p style="color: #ff0000;">{{ error_msg }}</p>
+      {% endif %}
+      <table>
+        {{ form }}
+      </table>
+        <input type="submit" value="Save changes">
+    </form>
+
+{% endblock %}

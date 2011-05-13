@@ -1,3 +1,6 @@
+from google.appengine.dist import use_library
+use_library('django', '1.2')
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.db import Key
@@ -39,19 +42,50 @@ class AccountHandler(webapp.RequestHandler):
 
     @login_required
     def get(self, account_key):
-        account = Account.all().filter('__key__ =', Key(account_key)).get()
-        if not account:
+        account = get_account(account_key)
+        if account is None:
             # account doesn't exist
             self.error(404)
             self.response.out.write("no such account")
         else:
-            self.response.out.write(template.render('templates/account.html', 
+            self.response.out.write(template.render('templates/account.html',
                                                     {'account': account}
                                                     ))
 
 
+class AccountEditHandler(webapp.RequestHandler):
+    @login_required
+    def get(self, account_key):
+        account = Account.get(account_key)
+        if not account_is_current(account):
+            self.error(403)
+            self.response.out.write("cannot edit settings for other users")
+        else:
+            self.response.out.write(template.render('templates/account_edit.html',
+                                                    { 'form': AccountForm(instance=account) }
+                                                    ))
+
+    def post(self, account_key):
+        account = Account.get(account_key)
+        if not account_is_current(account):
+            self.error(403)
+            self.response.out.write("cannot edit settings for other users")
+        else:
+            form = AccountForm(data=self.request.POST, instance=account)
+            if form.is_valid():
+                # Save the data, and redirect to the view page
+                entity = form.save()
+                self.redirect('/account/' + account_key)
+            else:
+                # Reprint the form
+                self.response.out.write(template.render('templates/account_edit.html',
+                                                        { 'form': form }
+                                                        ))
+
+
 application = webapp.WSGIApplication([('/account/', AccountCollectionHandler),
-                                      (r'/account/([^/]+)', AccountHandler)],
+                                      (r'/account/([^/]+)', AccountHandler),
+                                      (r'/account/([^/]+)/edit', AccountEditHandler)],
                                      debug=True)
 
 

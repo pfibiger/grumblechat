@@ -2,9 +2,12 @@
 
 {% block content %}
 
-    <h2>Gravatar: {{ account.gravatar_tag }}</h2>
-    <h2>Account: {{ account.user.email }}</h2>
-    <p>Nickname: {{ account.nickname }}</p>
+    <table class="account-settings">
+      <tr><th>Gravatar</th><td>{{ account.gravatar_tag|safe }}</td></tr>
+      <tr><th>Account</th><td>{{ account.user.email }}</td></tr>
+      <tr><th>Nickname</th><td>{{ account.nickname }}</td></tr>
+    </table>
+    <p><a href="/account/{{ account.key }}/edit">Edit settings</a></p>
     
     <p><a href="/">Home</a> | <a href="/room/">Rooms List</a></p>
 

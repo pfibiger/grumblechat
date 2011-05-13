@@ -105,7 +105,7 @@ var chat = function() {
         var $msg_new = $msg_template.clone();
         $msg_new.css('display', '');
         localizeTimestamp($msg_new.find('.msg-timestamp abbr'), timestamp);
-        $msg_new.find('.msg-sender').html(sender);
+        $msg_new.find('.msg-sender').text(sender);
         $msg_new.find('.msg-content').html(msg);
         return $msg_new;
     }
