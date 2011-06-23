@@ -285,3 +285,13 @@ button:active {
 }
 
 .close:hover {background: #666; color: #000;}
+
+button#pickfiles {
+    margin-bottom: 10px;
+}
+
+#sidebar button {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+}

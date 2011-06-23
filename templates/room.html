@@ -9,8 +9,10 @@
 {% block content %}
 <div class="superfluous-surrounding-sidebar">
 <div id="sidebar">
-<div class="details">
+
     <h2 id="room-name">{{ room.name }}</h2>
+
+<div class="details">
     <h3 id="room-topic" class="edit">{{ room.topic }}</h3>
     <hr/>
     <div class="user-stuff">
@@ -26,25 +28,26 @@
     </div>
     <div class="uploads">
     <hr/>
-    <h3 id="room-fileuploads">Upload:</h3>
     <form>
             <div id="container">
                     <div id="filelist"></div>
-                    <a id="pickfiles" href="#">[Upload files]</a>
+                    <button id="pickfiles">Upload Files</button>
             </div>
     </form>
     </div>
     <hr/>
-    <form action="/room/{{ room.key.name }}/leave" method="post">
-      <p>
-        <button type="submit" value="Leave Room" id="leave" >Leave Room</button>
-      </p>
-    </form>
 	<div id="settings">
 		<a href="https://github.com/pfibiger/grumblechat/issues" target="_blank">Bug/Feature Request</a><br>
 		<a href="/account/{{ account.key }}">My Settings</a>
 	</div>
+
     <a href="http://pfibiger.github.com/grumblechat/"><img src="/images/logo.png" id="logo" /></a>
+        <form action="/room/{{ room.key.name }}/leave" method="post">
+      <p>
+        <button type="submit" value="Leave Room" id="leave" >Leave Room</button>
+      </p>
+    </form>
+
 </div>
 </div><!-- close #sidebar -->
 </div>

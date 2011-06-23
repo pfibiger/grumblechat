@@ -2,9 +2,6 @@ var chat = function() {
 
     // Didn't know where to put this, so it goes up top
 
-    $("#text-entry-content").focus();
-    
-
     // private
     var KEY_TAB = 9;
 
@@ -400,6 +397,17 @@ var chat = function() {
         });
         $('#text-entry').submit(textEntrySubmit).keydown(textEntryKeydown);
 
+        $('#text-entry-content').focus(function(e) {
+           $(this).css('background', '#eee');
+           $(this).parent().css('background', '#eee');
+        });
+
+        $('#text-entry-content').focusout(function(e) {
+           $(this).css('background', '#e3e3e3');
+           $(this).parent().css('background', '#e3e3e3');
+        });
+ 
+        
         // gather the bare title
         pristineTitle = document.title;
 
