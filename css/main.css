@@ -106,12 +106,9 @@ a {color: #3087e0;}
 }
 
 #sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 18%;
-    padding: .5%;
-    background: #f0f0f0;
+    overflow: auto;
+    background: #fff;
+    padding: 10px;
 }
 
 #room-name {
@@ -140,9 +137,11 @@ h3#room-users {
     margin-top: 10px;
 }
 
+#text-entry .preface-text {border-top: 1px solid #c7c7c7; z-index: 100; position: relative;}
+
 #text-entry-content {
     background: #e3e3e3;
-    font-size: 120%; 
+    font-size: 120%;
     border: 0;
     position: relative;
     z-index: 99;
@@ -202,3 +201,87 @@ table.account-settings {
     padding-top: 0;
     background: url(/images/eightysixpercent.png);
 }
+
+.superfluous-surrounding-sidebar {
+    background: url(/images/eightysixpercent.png);
+    width: 20%;
+    position: fixed;
+    top: 0;
+    right: 20px;
+    padding: 10px;
+    margin-top: -10px;
+}
+
+img#logo-main, img#logo {
+    opacity: .3;
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+img#logo-main:hover, img#logo:hover {opacity: 1;}
+
+h1 {width: 600px; margin: 0 auto;}
+
+.superfluous-static {
+    background: url(/images/eightysixpercent.png);
+    padding: 10px;
+    margin: 0 auto;
+    width: 800px;
+}
+
+.static {
+    background: #fff;
+    padding: 20px;
+}
+
+.settings li {list-style: none; font-size: 120%;}
+
+label {width: 100px; text-align: right; display: inline-block; margin-right: 10px;}
+
+input {padding: 3px; width: 300px;}
+input#nope {margin-left: 80px; width: 20px; margin-right: 10px;}
+
+button {
+    border: 0;
+    font-size: 120%;
+    background: #306ea7;
+    display: inline-block;
+    padding: 5px 10px 6px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
+    text-shadow: 0 -1px 1px #666;
+    border-bottom: 1px solid #666;
+    position: relative;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #3485d0;
+}
+
+button:active {
+
+    border-top: 1px solid #666;
+    border-bottom: 0;
+}
+
+.close {
+    float: right;
+    padding: 9px;
+    background: #ccc;
+    border-radius: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+}
+
+.close:hover {background: #666; color: #000;}

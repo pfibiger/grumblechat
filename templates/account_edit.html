@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="superfluous-static">
+<div class="static">
 
-    <p>Edit account settings:</p>
+    <h2>Edit Account Settings</h2>
 
     <form action="" method="POST">
       {% if error_msg %}
         <p style="color: #ff0000;">{{ error_msg }}</p>
       {% endif %}
-      <table>
-        {{ form }}
-      </table>
-        <input type="submit" value="Save changes">
+      <ul class="settings">
+        {{ form.as_ul }}
+      </ul>
+        <button type="submit" value="Save changes">Save Changes</button>
     </form>
 
+</div></div>
 {% endblock %}

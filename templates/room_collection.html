@@ -2,7 +2,8 @@
 
 {% block content %}
 
-
+<div class="superfluous-static">
+<div class="static">
     <h2>Rooms</h2>
     {% for room in rooms %}
 	<span>
@@ -32,15 +33,15 @@
 	</span>
     {% endfor %}
 
-    <h3>Create a new room</h3>
+    <h2>Create a new room</h2>
 
     <form action="" method="post">
       {% if error_msg %}
       <p style="color: #ff0000;">{{ error_msg }}</p>
       {% endif %}
-      <p>Name: <input type="text" name="name" value="{{ name }}"/></p>
-      <p><input type="checkbox" name="visibility" value="public" checked/> Make Public (visible in on this listing of rooms)</p>
-      <p><input type="submit" value="Create Room"/></p>
+      <p><label>Name:</label> <input type="text" name="name" value="{{ name }}"/></p>
+      <p><input type="checkbox" name="visibility" value="public" checked id="nope" /> Make Public (visible in on this listing of rooms)</p>
+      <p><button type="submit" value="Create Room">Create Room</button></p>
     </form>
-
+</div></div>
 {% endblock %}

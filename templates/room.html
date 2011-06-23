@@ -7,7 +7,9 @@
 
 
 {% block content %}
+<div class="superfluous-surrounding-sidebar">
 <div id="sidebar">
+<div class="details">
     <h2 id="room-name">{{ room.name }}</h2>
     <h3 id="room-topic" class="edit">{{ room.topic }}</h3>
     <hr/>
@@ -35,13 +37,16 @@
     <hr/>
     <form action="/room/{{ room.key.name }}/leave" method="post">
       <p>
-        <input type="submit" value="Leave Room" id="leave" />
+        <button type="submit" value="Leave Room" id="leave" >Leave Room</button>
       </p>
     </form>
 	<div id="settings">
 		<a href="https://github.com/pfibiger/grumblechat/issues" target="_blank">Bug/Feature Request</a><br>
 		<a href="/account/{{ account.key }}">My Settings</a>
 	</div>
+    <a href="http://pfibiger.github.com/grumblechat/"><img src="/images/logo.png" id="logo" /></a>
+</div>
+</div><!-- close #sidebar -->
 </div>
 <div class="superfluous-surrounding">
 <table id="chatlog">
@@ -51,8 +56,8 @@
   {% include "room_message.html" %}
 </table>
 
-<form id="text-entry" action="/room/{{ room.key.name }}/msg" method="post">  
-  <div>
+<form id="text-entry" action="/room/{{ room.key.name }}/msg" method="post">
+  <div class="preface-text">
     <input id="text-entry-content" type="text" name="content" autocomplete="off" placeholder="UR MSG HERE"/>
   </div>
 </form>

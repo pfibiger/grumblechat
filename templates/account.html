@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="superfluous-static">
+<div class="static">
 
-    <table class="account-settings">
-      <tr><th>Gravatar</th><td>{{ account.gravatar_tag|safe }}</td></tr>
-      <tr><th>Account</th><td>{{ account.user.email }}</td></tr>
-      <tr><th>Nickname</th><td>{{ account.nickname }}</td></tr>
-      <tr><th>Sound effects</th><td>{{ account.use_sound|yesno:"enabled,disabled" }}</td></tr>
-    </table>
+<h2>Account Settings</h2>
+    <ul class="settings">
+      <li>{{ account.gravatar_tag|safe }}</li>
+      <li>{{ account.user.email }}</li>
+      <li>{% if account.url %}<a href="{{ account.urL }}">{{ account.url }}</a>{% endif %}</li>
+      <li>{{ account.nickname }}</li>
+      <li>Sound effects {{ account.use_sound|yesno:"enabled,disabled" }}</li>
+    </ul>
     <p><a href="/account/{{ account.key }}/edit">Edit settings</a></p>
-    
     <p><a href="/">Home</a> | <a href="/room/">Rooms List</a></p>
 
+</div></div>
 {% endblock %}
