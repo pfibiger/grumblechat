@@ -141,16 +141,16 @@ h3#room-users {
 }
 
 #text-entry-content {
-
     background: #e3e3e3;
-    margin-left: 5px;
-    margin-right: 20px;
     font-size: 120%; 
-    padding: 3px;
-    width: 780px;
     border: 0;
     position: relative;
     z-index: 99;
+    width: 98.1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 #text-entry-content:focus {
@@ -197,7 +197,7 @@ table.account-settings {
     margin-bottom: 20px;
     min-width: 550px;
     margin-left: 20px;
-    width: 800px;
+    width: 70%;
     padding: 10px;
     padding-top: 0;
     background: url(/images/eightysixpercent.png);
